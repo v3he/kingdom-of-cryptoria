@@ -1,14 +1,19 @@
 <script lang="ts">
 
 	import { ethers } from 'ethers';
-	// import type { PageData } from './$types'
+	import type { PageData } from './$types'
 	import { onMount } from 'svelte'
+	import { goto } from "$app/navigation"
+	import { Wallet } from '$lib/Wallet'
 
-	// export let data: PageData
+	export let data: PageData
 
-	let address: string = ''
+	let wallet: Wallet
 
-	async function connectWallet() {
+	let isMetaMask: boolean = false
+	let isConnected: boolean = false
+
+	async function connectMetaMask() {
 		if(window.ethereum) {
 
 			const accounts = await window.ethereum.request({ method: 'eth_requestAccounts'})
@@ -20,6 +25,11 @@
 					}
 				})
 
+			setTimeout(() => {
+				console.log('call')
+				wallet.setLocalChain()
+			}, 4000)
+
 			const provider = new ethers.BrowserProvider(window.ethereum)
 			console.log(ethers.formatEther(await provider.getBalance(accounts[0])))
 
@@ -29,31 +39,31 @@
 	}
 
 	onMount(async () => {
-		if (window.ethereum) {
 
-			console.log(window.ethereum.isMetaMask)
+		isMetaMask = !!window.ethereum?.isMetaMask
 
-			const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+		if(!isMetaMask)
+			return
 
-			window.ethereum.on('connect', () => console.log('connected'))
-			window.ethereum.on('disconnect', () => console.log('disconnect'))
+		// check if the wallet is already created
+		wallet = new Wallet(await window.ethereum.request({ method: 'eth_accounts' }))
 
-			// on change between connected accounts
-			window.ethereum.on('accountsChanged', ()  => console.log('change'))
-
-		} else {
-			console.log('disconnected')
-		}
-	});
+	})
 
 </script>
 
-{#if address}
-	<p>Successfully connected with account <strong>{address}</strong></p>
+{#if isMetaMask}
+	{#if wallet?.isConnected()}
+		<p>Successfully connected with {wallet.account}</p>
+	{:else}
+		<button on:click={connectMetaMask}>Connect with MetaMask</button>
+		<br />
+		<br />
+		<h2>You can use this accounts to play with</h2>
+		{#each data.accounts as account}
+			<span>{account.privKey}</span><br />
+		{/each}
+	{/if}
 {:else}
-	<button on:click={connectWallet}>Connect with Wallet</button>
+	<p>You need to install metamask in order to play</p>
 {/if}
-
-<!-- {#each data.accounts as account}
-	<span>{account.pubKey}</span><br />
-{/each} -->

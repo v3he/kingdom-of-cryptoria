@@ -31,7 +31,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"ganache": "^7.8.0",
-		"web3": "^4.0.1"
+		"ethers": "^6.6.1",
+		"ganache": "^7.8.0"
 	}
 }

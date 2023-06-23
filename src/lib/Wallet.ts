@@ -1,46 +1,46 @@
+import type { BrowserProvider } from 'ethers'
+
+const chainOptions = {
+	chainId: '0x539',
+	chainName: 'Kingdom Of Cryptoria',
+	rpcUrls: ['http://127.0.0.1:8545'],
+	iconUrls: [],
+	nativeCurrency: {
+		name: 'ETH',
+		symbol: 'ETH',
+		decimals: 18
+	},
+	blockExplorerUrls: ['https://etherscan.io']
+}
+
 export class Wallet {
+	accounts: string[] = []
+	provider: BrowserProvider
 
-  accounts: string[]
+	get account(): string {
+		return this.accounts[0]
+	}
 
-  constructor(accounts: string[]) {
-    this.accounts = accounts
-    this.startOnChangeListener()
-  }
+	async isConnected() {
+		this.accounts = await window.ethereum.request({ method: 'eth_accounts' })
+		return this.accounts.length > 0
+	}
 
-  get account(): string {
-    return this.accounts[0]
-  }
+	setAccounts(accounts: string[]): void {
+		this.accounts = accounts
+	}
 
-  isConnected(): boolean {
-    return this.accounts.length > 0
-  }
+	setProvider(provider: BrowserProvider): void {
+		this.provider = provider
+	}
 
-  async setLocalChain() {
-    console.log('executed')
-    const a = await window.ethereum.request({
-      "method": "wallet_addEthereumChain",
-      "params": [
-        {
-          "chainId": "0x539",
-          "chainName": "Kingdom Of Cryptoria",
-          "rpcUrls": [
-            "http://127.0.0.1:8545"
-          ],
-          "iconUrls": [],
-          "nativeCurrency": {
-            "name": "ETH",
-            "symbol": "ETH",
-            "decimals": 18
-          },
-          "blockExplorerUrls": ["https://rpc.ankr.com/gnosis"]
-        }
-      ]
-    }).catch((err:any) => console.log(err))
-    console.log(a)
-  }
+	async promptChainCreation() {
+		await window.ethereum
+			.request({ method: 'wallet_addEthereumChain', params: [chainOptions] })
+			.catch((error: MetaMaskError) => console.log(error))
+	}
 
-  private startOnChangeListener(): void {
-		// window.ethereum.on('accountsChanged', () => window.location.reload())
-  }
-
+	startEventListeners(): void {
+		window.ethereum.on('accountsChanged', () => window.location.reload())
+	}
 }

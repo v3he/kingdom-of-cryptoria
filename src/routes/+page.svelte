@@ -1,61 +1,51 @@
 <script lang="ts">
 
-	import { ethers } from 'ethers';
-	import type { PageData } from './$types'
 	import { onMount } from 'svelte'
-	import { goto } from "$app/navigation"
-	import { Wallet } from '$lib/Wallet'
+	import { goto } from '$app/navigation'
+	import { wallet } from '$lib/stores/GeneralStore'
+
+	import type { PageData } from './$types'
 
 	export let data: PageData
 
-	let wallet: Wallet
-
-	let isMetaMask: boolean = false
-	let isConnected: boolean = false
+	let isMetaMask = false
+	let isConnected = false
 
 	async function connectMetaMask() {
-		if(window.ethereum) {
+		const accounts = await window?.ethereum?.request({ method: 'eth_requestAccounts' })
+			.catch((err: MetaMaskError) => {
+				if (err.code === 4001) {
+					console.log('Please connect to MetaMask.')
+				} else {
+					console.error(err)
+				}
+			})
 
-			const accounts = await window.ethereum.request({ method: 'eth_requestAccounts'})
-				.catch((err: MetaMaskError) => {
-					if (err.code === 4001) {
-						console.log('Please connect to MetaMask.');
-					} else {
-						console.error(err);
-					}
-				})
-
-			setTimeout(() => {
-				console.log('call')
-				wallet.setLocalChain()
-			}, 4000)
-
-			const provider = new ethers.BrowserProvider(window.ethereum)
-			console.log(ethers.formatEther(await provider.getBalance(accounts[0])))
-
-		}else{
-			alert('No ethereum wallet found')
+		if (!accounts) {
+			return
 		}
+
+		$wallet.promptChainCreation()
+
+		return goto('/marketplace')
 	}
 
 	onMount(async () => {
-
 		isMetaMask = !!window.ethereum?.isMetaMask
 
-		if(!isMetaMask)
+		if (!isMetaMask) {
 			return
+		}
 
-		// check if the wallet is already created
-		wallet = new Wallet(await window.ethereum.request({ method: 'eth_accounts' }))
-
+		if (await $wallet.isConnected()) {
+			return goto('/marketplace')
+		}
 	})
 
 </script>
 
 {#if isMetaMask}
-	{#if wallet?.isConnected()}
-		<p>Successfully connected with {wallet.account}</p>
-	{:else}
+	{#if !isConnected}
 		<button on:click={connectMetaMask}>Connect with MetaMask</button>
 		<br />
 		<br />

@@ -1,4 +1,3 @@
-import type { Wallet } from '$lib/Wallet'
 import type { GanacheServer } from '$lib/GanacheServer'
 
 declare global {
@@ -7,7 +6,6 @@ declare global {
 	}
 	namespace App {
 		interface Locals {
-			wallet: Wallet
 			server: GanacheServer
 		}
 		// interface Error {}

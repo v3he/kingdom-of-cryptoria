@@ -1,6 +1,6 @@
 import fs from 'fs'
 import ganache from 'ganache'
-import { Account } from './models/Account'
+import { Account } from './Account'
 
 const PORT = 8545
 const DB_PATH = './ganache'
@@ -30,6 +30,7 @@ export class GanacheServer {
 	}
 
 	static async start(): Promise<GanacheServer> {
+
 		await new Promise((resolve, reject) => {
 			const server = ganache.server(defaultOptions)
 			server.listen(PORT, (err) => (err ? reject() : resolve(server.provider)))

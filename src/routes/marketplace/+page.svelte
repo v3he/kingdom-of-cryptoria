@@ -2,8 +2,8 @@
 
 	import { ethers } from 'ethers'
 	import { onMount } from 'svelte'
+	import { wallet } from '$lib/store'
 	import { goto } from '$app/navigation'
-	import { wallet } from '$lib/stores/GeneralStore'
 
 	onMount(async () => {
 

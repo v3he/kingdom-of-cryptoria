@@ -1,8 +1,8 @@
 <script lang="ts">
 
 	import { onMount } from 'svelte'
+	import { wallet } from '$lib/store'
 	import { goto } from '$app/navigation'
-	import { wallet } from '$lib/stores/GeneralStore'
 
 	import type { PageData } from './$types'
 
@@ -43,6 +43,8 @@
 	})
 
 </script>
+
+<h1>{data.serverStarted}</h1>
 
 {#if isMetaMask}
 	{#if !isConnected}

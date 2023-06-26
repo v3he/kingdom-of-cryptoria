@@ -1,8 +1,16 @@
-import { get } from 'svelte/store'
-import { server } from '$lib/stores/ServerStore'
 import type { Handle } from '@sveltejs/kit'
+import { GanacheServer } from '$lib/models/GanacheServer'
+
+let ganacheServer: GanacheServer
 
 export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.server = get(server)
+
+	if(!ganacheServer) {
+		ganacheServer = await GanacheServer.start()
+	}
+
+	event.locals.server = ganacheServer
+
 	return await resolve(event)
+
 }

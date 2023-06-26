@@ -1,5 +1,4 @@
 <script lang="ts">
-
 	import { onMount } from 'svelte'
 	import { wallet } from '$lib/store'
 	import { goto } from '$app/navigation'
@@ -12,7 +11,8 @@
 	let isConnected = false
 
 	async function connectMetaMask() {
-		const accounts = await window?.ethereum?.request({ method: 'eth_requestAccounts' })
+		const accounts = await window?.ethereum
+			?.request({ method: 'eth_requestAccounts' })
 			.catch((err: MetaMaskError) => {
 				if (err.code === 4001) {
 					console.log('Please connect to MetaMask.')
@@ -41,7 +41,6 @@
 			return goto('/marketplace')
 		}
 	})
-
 </script>
 
 <h1>{data.serverStarted}</h1>

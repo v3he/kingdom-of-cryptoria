@@ -77,7 +77,7 @@ export class GanacheServer {
 			throw 'error while compiling smart contracts'
 		}
 
-		marketplaceContract.parse(output)
+		marketplaceContract.deploy(output, this.signer)
 	}
 
 	private findImports(dep: string) {

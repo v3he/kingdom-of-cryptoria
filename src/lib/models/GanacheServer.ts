@@ -3,16 +3,11 @@ import solc from 'solc'
 import path from 'path'
 import ganache from 'ganache'
 import { Account } from './Account'
+import { SmartContract } from './ SmartContract'
 
 const PORT = 8545
 const DB_PATH = './ganache'
 const ACCOUNT_KEYS_PATH = `${DB_PATH}/accounts.json`
-
-let contracts = {
-	etherstone: { path: './src/lib/contracts/EtherStone.sol' },
-	cryptorianrelics: { path: './src/lib/contracts/CryptorianRelics.sol' },
-	marketplace: { path: './src/lib/contracts/NFTMarketplace.sol' }
-}
 
 const defaultOptions = {
 	logging: {
@@ -60,30 +55,31 @@ export class GanacheServer {
 	}
 
 	compileContracts(): void {
-		const input = {
+
+		const marketplaceContract = new SmartContract('NFTMarketplace', [
+			new SmartContract('EtherStone'),
+			new SmartContract('CryptorianRelics')
+		])
+
+		const compileOptions = {
 			language: 'Solidity',
-			sources: {
-				'EtherStone.sol': {
-					content: fs.readFileSync(contracts.etherstone.path, { encoding: 'utf8', flag: 'r' })
-				},
-				'CryptorianRelics.sol': {
-					content: fs.readFileSync(contracts.cryptorianrelics.path, { encoding: 'utf8', flag: 'r' })
-				},
-				'NFTMarketplace.sol': {
-					content: fs.readFileSync(contracts.marketplace.path, { encoding: 'utf8', flag: 'r' })
-				}
-			},
+			sources: marketplaceContract.sources(),
 			settings: {
 				outputSelection: { '*': { '*': ['*'] } }
 			}
 		}
 
-		const output = JSON.parse(solc.compile(JSON.stringify(input), { import: this.findImports }))
+		const output = JSON.parse(solc.compile(JSON.stringify(compileOptions), { import: this.findImports }))
 
-		console.log(output)
+		if(output?.errors?.find(e => e.severity === 'error')) {
+			throw "error while compiling smart contracts"
+		}
+
+		marketplaceContract.parse(output)
+
 	}
 
-	findImports(dep: any) {
+	private findImports(dep: string) {
 		return {
 			contents: fs.readFileSync(path.join('node_modules', dep), { encoding: 'utf8', flag: 'r' })
 		}

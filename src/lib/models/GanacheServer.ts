@@ -4,6 +4,7 @@ import path from 'path'
 import ganache from 'ganache'
 import { Account } from './Account'
 import { SmartContract } from './ SmartContract'
+import { JsonRpcProvider, JsonRpcSigner, ethers } from 'ethers'
 
 const PORT = 8545
 const DB_PATH = './ganache'
@@ -24,11 +25,13 @@ const defaultOptions = {
 }
 
 export class GanacheServer {
-	owner: Account
+	signer: JsonRpcSigner
 	accounts: Account[]
+	provider: JsonRpcProvider
 
-	constructor(owner: Account, accounts: Account[]) {
-		this.owner = owner
+	constructor(provider: JsonRpcProvider, signer: JsonRpcSigner, accounts: Account[]) {
+		this.provider = provider
+		this.signer = signer
 		this.accounts = accounts
 	}
 
@@ -38,24 +41,21 @@ export class GanacheServer {
 			server.listen(PORT, (err) => (err ? reject() : resolve(server.provider)))
 		})
 
+		const provider = new ethers.JsonRpcProvider(`http://localhost:${PORT}`)
+		const signer = await provider.getSigner(0)
+
 		const accountsRaw = JSON.parse(
 			fs.readFileSync(ACCOUNT_KEYS_PATH, { encoding: 'utf8', flag: 'r' })
 		)
-
-		const ownerPubKey: string = Object.keys(accountsRaw.addresses)[0]
-		const ownerPrivKey: string = accountsRaw.private_keys[ownerPubKey]
-
-		const owner = new Account(ownerPubKey, ownerPrivKey)
 
 		const accounts = Object.entries(accountsRaw.private_keys)
 			.slice(1)
 			.map(([pub, priv]) => new Account(pub, priv as string))
 
-		return new GanacheServer(owner, accounts)
+		return new GanacheServer(provider, signer, accounts)
 	}
 
 	compileContracts(): void {
-
 		const marketplaceContract = new SmartContract('NFTMarketplace', [
 			new SmartContract('EtherStone'),
 			new SmartContract('CryptorianRelics')
@@ -69,14 +69,15 @@ export class GanacheServer {
 			}
 		}
 
-		const output = JSON.parse(solc.compile(JSON.stringify(compileOptions), { import: this.findImports }))
+		const output = JSON.parse(
+			solc.compile(JSON.stringify(compileOptions), { import: this.findImports })
+		)
 
-		if(output?.errors?.find(e => e.severity === 'error')) {
-			throw "error while compiling smart contracts"
+		if (output?.errors?.find((e) => e.severity === 'error')) {
+			throw 'error while compiling smart contracts'
 		}
 
 		marketplaceContract.parse(output)
-
 	}
 
 	private findImports(dep: string) {

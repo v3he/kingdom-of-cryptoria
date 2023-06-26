@@ -2,13 +2,12 @@ import fs from 'fs'
 import path from 'path'
 
 export class SmartContract {
-
 	name: string
 	fullname: string
 	location: string
 	content: string
-  abi: string
-  bytecode: string
+	abi: string
+	bytecode: string
 	dependencies: SmartContract[]
 
 	constructor(name: string, deps: SmartContract[] = []) {
@@ -28,13 +27,12 @@ export class SmartContract {
 		return sources
 	}
 
-  parse(output: any): void {
-    this.dependencies.forEach((dep: SmartContract) => {
-      dep.abi = output.contracts[dep.fullname][dep.name].abi
-      dep.bytecode = output.contracts[dep.fullname][dep.name].evm.bytecode.object
-    })
-    this.abi = output.contracts[this.fullname][this.name].abi
-    this.bytecode = output.contracts[this.fullname][this.name].evm.bytecode.object
-  }
-
+	parse(output: any): void {
+		this.dependencies.forEach((dep: SmartContract) => {
+			dep.abi = output.contracts[dep.fullname][dep.name].abi
+			dep.bytecode = output.contracts[dep.fullname][dep.name].evm.bytecode.object
+		})
+		this.abi = output.contracts[this.fullname][this.name].abi
+		this.bytecode = output.contracts[this.fullname][this.name].evm.bytecode.object
+	}
 }

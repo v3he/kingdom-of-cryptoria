@@ -6,7 +6,7 @@ let ganacheServer: GanacheServer
 export const handle: Handle = async ({ event, resolve }) => {
 	if (!ganacheServer) {
 		ganacheServer = await GanacheServer.start()
-		ganacheServer.compileContracts()
+		ganacheServer.deploy()
 	}
 
 	event.locals.server = ganacheServer

@@ -3,8 +3,8 @@ import solc from 'solc'
 import path from 'path'
 import ganache from 'ganache'
 import { Account } from './Account'
-import { SmartContract } from './ SmartContract'
 import { JsonRpcProvider, JsonRpcSigner, ethers } from 'ethers'
+import { Marketplace } from './Marketplace'
 
 const PORT = 8545
 const DB_PATH = './ganache'
@@ -25,9 +25,10 @@ const defaultOptions = {
 }
 
 export class GanacheServer {
+
+	provider: JsonRpcProvider
 	signer: JsonRpcSigner
 	accounts: Account[]
-	provider: JsonRpcProvider
 
 	constructor(provider: JsonRpcProvider, signer: JsonRpcSigner, accounts: Account[]) {
 		this.provider = provider
@@ -36,6 +37,7 @@ export class GanacheServer {
 	}
 
 	static async start(): Promise<GanacheServer> {
+
 		await new Promise((resolve, reject) => {
 			const server = ganache.server(defaultOptions)
 			server.listen(PORT, (err) => (err ? reject() : resolve(server.provider)))
@@ -53,36 +55,33 @@ export class GanacheServer {
 			.map(([pub, priv]) => new Account(pub, priv as string))
 
 		return new GanacheServer(provider, signer, accounts)
+
 	}
 
-	compileContracts(): void {
-		const marketplaceContract = new SmartContract('NFTMarketplace', [
-			new SmartContract('EtherStone'),
-			new SmartContract('CryptorianRelics')
-		])
+	deploy(): void {
+
+		const marketplace = new Marketplace(this.signer)
 
 		const compileOptions = {
 			language: 'Solidity',
-			sources: marketplaceContract.sources(),
+			sources: marketplace.sources,
 			settings: {
 				outputSelection: { '*': { '*': ['*'] } }
 			}
 		}
 
 		const output = JSON.parse(
-			solc.compile(JSON.stringify(compileOptions), { import: this.findImports })
+			solc.compile(JSON.stringify(compileOptions), {
+				import: (d: string) => ({ contents: fs.readFileSync(path.join('node_modules', d), { encoding: 'utf8', flag: 'r' }) })
+			})
 		)
 
 		if (output?.errors?.find((e) => e.severity === 'error')) {
 			throw 'error while compiling smart contracts'
 		}
 
-		marketplaceContract.deploy(output, this.signer)
+		marketplace.deploy(output)
+
 	}
 
-	private findImports(dep: string) {
-		return {
-			contents: fs.readFileSync(path.join('node_modules', dep), { encoding: 'utf8', flag: 'r' })
-		}
-	}
 }

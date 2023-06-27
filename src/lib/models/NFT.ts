@@ -1,9 +1,7 @@
 export class NFT {
+	metadata: string
 
-  metadata: string
-
-  constructor(metadata: string) {
-    this.metadata = metadata
-  }
-
+	constructor(metadata: string) {
+		this.metadata = metadata
+	}
 }

@@ -14,7 +14,7 @@ export class Marketplace extends SmartContract {
 		this.signer = signer
 		this.nft = new SmartContract('CryptorianRelics')
 		this.currency = new SmartContract('EtherStone')
-		this.dependencies = [this.nft, this.currency]
+		this.dependencies = [this.currency, this.nft]
 
 	}
 

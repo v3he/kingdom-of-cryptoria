@@ -3,10 +3,11 @@ import path from 'path'
 import { BaseContract, JsonRpcSigner, ethers } from 'ethers'
 import type { Sources } from '$lib/types/Source'
 
+const CONTRACTS_PATH: string = './src/lib/contracts'
+
 export class SmartContract {
 
 	private _name: string
-	private _fullname: string
 	private _content: string
 	private _abi: string
 	private _bytecode: string
@@ -15,16 +16,16 @@ export class SmartContract {
 
 	constructor(name: string, dependencies: SmartContract[] = []) {
 		this._name = name
-		this._fullname = `${name}.sol`
 		this._dependencies = dependencies
-		this._content = fs.readFileSync(path.join('src/lib/contracts', this._fullname), {
-			encoding: 'utf8',
-			flag: 'r'
-		})
+		this._content = fs.readFileSync(path.join(CONTRACTS_PATH, this.fullname), { encoding: 'utf8', flag: 'r' })
 	}
 
 	get address(): string {
 		return this._address
+	}
+
+	get fullname(): string {
+		return `${ this._name }.sol`
 	}
 
 	set dependencies(dependencies: SmartContract | SmartContract[]) {
@@ -37,33 +38,30 @@ export class SmartContract {
 
 	get sources(): Sources {
 		return this._dependencies.reduce((sources, dependency: SmartContract) => {
-			sources[dependency._fullname] = { content: dependency._content }
+			sources[dependency.fullname] = { content: dependency._content }
 			return sources
-		}, { [this._fullname]: { content: this._content } })
+		}, { [this.fullname]: { content: this._content } })
 	}
 
-	// todo: refactor this code
 	async deploy(compiledOutput: any, signer: JsonRpcSigner): Promise<void> {
 
-		for (const dep of this._dependencies) {
+		const deployContract = async (dep: SmartContract, parameters: any[] = []) => {
 
-			dep._abi = compiledOutput.contracts[dep._fullname][dep._name].abi
-			dep._bytecode = compiledOutput.contracts[dep._fullname][dep._name].evm.bytecode.object
+			dep._abi = compiledOutput.contracts[dep.fullname][dep._name].abi
+			dep._bytecode = compiledOutput.contracts[dep.fullname][dep._name].evm.bytecode.object
 
 			const factory = new ethers.ContractFactory(dep._abi, dep._bytecode, signer)
-			const contract: BaseContract = await factory.deploy()
+			const contract: BaseContract = await factory.deploy(...parameters)
 
 			dep._address = contract.target as string
 
 		}
 
-		this._abi = compiledOutput.contracts[this._fullname][this._name].abi
-		this._bytecode = compiledOutput.contracts[this._fullname][this._name].evm.bytecode.object
+		for (const dep of this._dependencies) {
+			await deployContract(dep)
+		}
 
-		const factory = new ethers.ContractFactory(this._abi, this._bytecode, signer)
-		const contract: BaseContract = await factory.deploy(signer.address, ...this._dependencies.map((d) => d._address))
-
-		this._address = contract.target as string
+		await deployContract(this, [signer.address, ...this._dependencies.map((d) => d._address)])
 
 	}
 

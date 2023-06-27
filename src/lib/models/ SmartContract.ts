@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { BaseContract, JsonRpcSigner, ethers } from 'ethers'
+import { Contract, JsonRpcSigner, ethers } from 'ethers'
 import type { Sources } from '$lib/types/Source'
 
 const CONTRACTS_PATH: string = './src/lib/contracts'
@@ -11,7 +11,7 @@ export class SmartContract {
 	private _content: string
 	private _abi: string
 	private _bytecode: string
-	private _address: string
+	private _contract: Contract
 	private _dependencies: SmartContract[]
 
 	constructor(name: string, dependencies: SmartContract[] = []) {
@@ -20,8 +20,16 @@ export class SmartContract {
 		this._content = fs.readFileSync(path.join(CONTRACTS_PATH, this.fullname), { encoding: 'utf8', flag: 'r' })
 	}
 
+	get abi(): string {
+		return this._abi
+	}
+
 	get address(): string {
-		return this._address
+		return this._contract.target as string
+	}
+
+	get contract(): Contract {
+		return this._contract
 	}
 
 	get fullname(): string {
@@ -51,9 +59,9 @@ export class SmartContract {
 			dep._bytecode = compiledOutput.contracts[dep.fullname][dep._name].evm.bytecode.object
 
 			const factory = new ethers.ContractFactory(dep._abi, dep._bytecode, signer)
-			const contract: BaseContract = await factory.deploy(...parameters)
+			const contract = await factory.deploy(...parameters)
 
-			dep._address = contract.target as string
+			dep._contract = new ethers.Contract(contract.target as string, dep._abi, signer)
 
 		}
 
@@ -61,7 +69,7 @@ export class SmartContract {
 			await deployContract(dep)
 		}
 
-		await deployContract(this, [signer.address, ...this._dependencies.map((d) => d._address)])
+		await deployContract(this, [signer.address, ...this._dependencies.map((d) => d.address)])
 
 	}
 

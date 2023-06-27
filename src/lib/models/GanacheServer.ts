@@ -2,9 +2,11 @@ import fs from 'fs'
 import solc from 'solc'
 import path from 'path'
 import ganache from 'ganache'
+
+import { NFT } from './NFT'
 import { Account } from './Account'
-import { JsonRpcProvider, JsonRpcSigner, ethers } from 'ethers'
 import { Marketplace } from './Marketplace'
+import { JsonRpcProvider, JsonRpcSigner, ethers } from 'ethers'
 
 const PORT = 8545
 const DB_PATH = './ganache'
@@ -58,7 +60,7 @@ export class GanacheServer {
 
 	}
 
-	deploy(): void {
+	async deploy(): Promise<void> {
 
 		const marketplace = new Marketplace(this.signer)
 
@@ -70,17 +72,20 @@ export class GanacheServer {
 			}
 		}
 
-		const output = JSON.parse(
+		const compiledOutput = JSON.parse(
 			solc.compile(JSON.stringify(compileOptions), {
 				import: (d: string) => ({ contents: fs.readFileSync(path.join('node_modules', d), { encoding: 'utf8', flag: 'r' }) })
 			})
 		)
 
-		if (output?.errors?.find((e) => e.severity === 'error')) {
+		if (compiledOutput?.errors?.find((e) => e.severity === 'error')) {
 			throw 'error while compiling smart contracts'
 		}
 
-		marketplace.deploy(output)
+		await marketplace.deploy(compiledOutput)
+		await marketplace.mint([
+			new NFT('ipfs://QmYDUaByKHqLk2Mjnc9rMXrkXCWvRsYwFvBRgCoPdmQMXR')
+		])
 
 	}
 

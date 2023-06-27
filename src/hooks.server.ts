@@ -4,12 +4,14 @@ import { GanacheServer } from '$lib/models/GanacheServer'
 let ganacheServer: GanacheServer
 
 export const handle: Handle = async ({ event, resolve }) => {
+
 	if (!ganacheServer) {
 		ganacheServer = await GanacheServer.start()
-		ganacheServer.deploy()
+		await ganacheServer.deploy()
 	}
 
 	event.locals.server = ganacheServer
 
 	return await resolve(event)
+
 }

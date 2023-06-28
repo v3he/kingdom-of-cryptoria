@@ -16,41 +16,57 @@
 
 		var layer = new Konva.Layer();
 
-		var circle = new Konva.Circle({
-			x: stage.width() / 2,
-			y: stage.height() / 2,
-			radius: 70,
-			fill: 'red',
-			stroke: 'black',
-			strokeWidth: 4,
-		});
+		// var cont = stage.container();
 
-		var cont = stage.container();
+		// cont.tabIndex = 1;
 
-		cont.tabIndex = 1;
+		// cont.focus();
 
-		cont.focus();
+		// const DELTA = 10;
 
-		const DELTA = 10;
+		// cont.addEventListener('keydown', function (e) {
+		// 	if (e.code === 'ArrowLeft') {
+		// 		circle.x(circle.x() - DELTA);
+		// 	} else if (e.code === 'ArrowUp') {
+		// 		circle.y(circle.y() - DELTA);
+		// 	} else if (e.code === 'ArrowRight') {
+		// 		circle.x(circle.x() + DELTA);
+		// 	} else if (e.code === 'ArrowDown') {
+		// 		circle.y(circle.y() + DELTA);
+		// 	} else {
+		// 		return;
+		// 	}
+		// 	e.preventDefault();
+		// });
 
-		cont.addEventListener('keydown', function (e) {
-			if (e.code === 'ArrowLeft') {
-				circle.x(circle.x() - DELTA);
-			} else if (e.code === 'ArrowUp') {
-				circle.y(circle.y() - DELTA);
-			} else if (e.code === 'ArrowRight') {
-				circle.x(circle.x() + DELTA);
-			} else if (e.code === 'ArrowDown') {
-				circle.y(circle.y() + DELTA);
-			} else {
-				return;
-			}
-			e.preventDefault();
-		});
+		const imageObj = new Image()
 
-		layer.add(circle);
+		const idleFrames: any = []
 
-		stage.add(layer);
+		for (let i = 0; i < 18; i++) {
+			idleFrames.push(170 * i, 0, 170, 200)
+		}
+
+		imageObj.onload = function() {
+
+			const sprite = new Konva.Sprite({
+				x: stage.width() / 2,
+				y: stage.height() / 2,
+				image: imageObj,
+				animation: 'idle',
+				animations: {
+					idle: idleFrames
+				},
+				frameRate: 11,
+				frameIndex: 0,
+			})
+			layer.add(sprite)
+			stage.add(layer)
+			sprite.start()
+		}
+
+		// https://codeshack.io/images-sprite-sheet-generator/
+		imageObj.src = '/images/players/idle/spritesheet.png'
 
 	})
 

@@ -25,10 +25,31 @@
 			strokeWidth: 4,
 		});
 
-		// add the shape to the layer
+		var cont = stage.container();
+
+		cont.tabIndex = 1;
+
+		cont.focus();
+
+		const DELTA = 10;
+
+		cont.addEventListener('keydown', function (e) {
+			if (e.code === 'ArrowLeft') {
+				circle.x(circle.x() - DELTA);
+			} else if (e.code === 'ArrowUp') {
+				circle.y(circle.y() - DELTA);
+			} else if (e.code === 'ArrowRight') {
+				circle.x(circle.x() + DELTA);
+			} else if (e.code === 'ArrowDown') {
+				circle.y(circle.y() + DELTA);
+			} else {
+				return;
+			}
+			e.preventDefault();
+		});
+
 		layer.add(circle);
 
-		// add the layer to the stage
 		stage.add(layer);
 
 	})

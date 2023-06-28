@@ -84,7 +84,21 @@ export class GanacheServer {
 
 		await marketplace.deploy(compiledOutput)
 		await marketplace.mint([
-			new NFT('ipfs://QmYDUaByKHqLk2Mjnc9rMXrkXCWvRsYwFvBRgCoPdmQMXR')
+			new NFT('QmcyHKkesUQ3RmLQJQDLst9akCmfroRmcuVr2xemrEUCXz'),
+			new NFT('QmdLxKcotujCJJd2H6fkgcMKA9oMNmrU6aU4XwWWELqbgH'),
+			new NFT('QmSmYyn9GjCAbaNVeGiK4BbB5m8zhK4Tb4RbbvYwuckHoS'),
+			new NFT('QmW1uegeZFeUMDuAkBM1zzvqoudpkLEezVUSbtsVFEdhoF'),
+			new NFT('QmRw5KRpSkKwdLCWcmxcNCeSZmC5SHWVNY4fCtTRJJdSm1'),
+			new NFT('QmZPWsizZvzavZSC1gZbMW2azJFbFEb1QjhT1r4HX6WdJG'),
+			new NFT('QmRgnj3knBpPGgbyoRAK7vfehuDhFDU9zCtMnn6kwHgN3E'),
+			new NFT('QmbqYyszrYQrZQD6pf56x8aFzdBH6mtvmbB8zrExoGnqaj'),
+			new NFT('QmSupyZe68nWZw5S2ZfB4Pq2sJM6X3gT1CcDAmPPLaeTgF'),
+			new NFT('QmfKA9uEKev1oP9V9XUiPsSGwAqPvNw8wKQXjjBEfkRG7C'),
+			new NFT('QmQYYesXyGRFN5MxAWKX5ULNBAzFJ8w9ShfcAhx1WGGFdj'),
+			new NFT('QmYdyzy2m7H6MGx3PQYLM3yqDvGWgBuXrjY5ARTUy7krma'),
+			new NFT('QmWRPcjtGMsSS9aofAdKmLNfVoCokq4yvbgfUjr2ufDNyM'),
+			new NFT('QmZXE6yGgMXbEcrakqUnre17MNvJ5G8sqwQV7YDkbRxhF2'),
+			new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T'),
 		])
 
 	}

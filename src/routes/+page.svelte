@@ -3,9 +3,9 @@
 	import { wallet } from '$lib/store'
 	import { goto } from '$app/navigation'
 
-	import type { PageData } from './$types'
+	// import type { PageData } from './$types'
 
-	export let data: PageData
+	// export let data: PageData
 
 	let isMetaMask = false
 	let isConnected = false
@@ -43,17 +43,15 @@
 	})
 </script>
 
-<h1>{data.serverStarted}</h1>
-
 {#if isMetaMask}
 	{#if !isConnected}
 		<button on:click={connectMetaMask}>Connect with MetaMask</button>
 		<br />
 		<br />
 		<h2>You can use this accounts to play with</h2>
-		{#each data.accounts as account}
+		<!-- {#each data.accounts as account}
 			<span>{account.privKey}</span><br />
-		{/each}
+		{/each} -->
 	{/if}
 {:else}
 	<p>You need to install metamask in order to play</p>

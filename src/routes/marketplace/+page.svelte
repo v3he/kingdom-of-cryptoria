@@ -1,20 +1,50 @@
 <script lang="ts">
-	import { ethers } from 'ethers'
+
+	import Konva from 'konva'
+
 	import { onMount } from 'svelte'
-	import { wallet } from '$lib/store'
-	import { goto } from '$app/navigation'
+
+	let container: HTMLDivElement
 
 	onMount(async () => {
-		if (!window.ethereum?.isMetaMask || !(await $wallet.isConnected())) {
-			return goto('/')
-		}
 
-		$wallet.startEventListeners()
-		$wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
+		var stage = new Konva.Stage({
+			container,
+			width: container.clientWidth,
+			height: container.clientHeight,
+		})
 
-		wallet.set($wallet)
+		var layer = new Konva.Layer();
+
+		var circle = new Konva.Circle({
+			x: stage.width() / 2,
+			y: stage.height() / 2,
+			radius: 70,
+			fill: 'red',
+			stroke: 'black',
+			strokeWidth: 4,
+		});
+
+		// add the shape to the layer
+		layer.add(circle);
+
+		// add the layer to the stage
+		stage.add(layer);
+
 	})
+
 </script>
 
-<h1>Marketplace</h1>
-<h3>Connected with {$wallet.account}</h3>
+<div id="canvas" bind:this={container}></div>
+
+<style lang="scss">
+	#canvas {
+		width: 100vw;
+		height: 100vh;
+		background: url("$lib/assets/images/background.png") no-repeat center center fixed;
+		background-size: cover;
+		-o-background-size: cover;
+		-moz-background-size: cover;
+		-webkit-background-size: cover;
+	}	
+</style>

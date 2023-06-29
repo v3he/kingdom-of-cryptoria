@@ -1,8 +1,6 @@
 <script lang="ts">
 
-	import { Player } from '$lib/models/game/Player'
-
-	import Konva from 'konva'
+	import { GameFactory } from '$lib/models/game/GameFactory'
 
 	import { onMount } from 'svelte'
 
@@ -10,42 +8,36 @@
 
 	onMount(async () => {
 
-		var stage = new Konva.Stage({
-			container,
-			width: container.clientWidth,
-			height: container.clientHeight,
-		})
+		var game = GameFactory
+			.container(container)
+			.players('f3331ee142860fd9833305cc4ce070f3')
+			.build()
 
-		var layer = new Konva.Layer()
-		stage.add(layer)
+		// var cont = stage.container();
 
-		const player = new Player('f3331ee142860fd9833305cc4ce070f3', stage)
+		// cont.tabIndex = 1;
 
-		var cont = stage.container();
+		// cont.focus();
 
-		cont.tabIndex = 1;
+		// cont.addEventListener('keyup', function (e) {
+		// 	if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+		// 		player.idle()
+		// 	} else {
+		// 		return;
+		// 	}
+		// 	e.preventDefault();
+		// });
 
-		cont.focus();
-
-		cont.addEventListener('keyup', function (e) {
-			if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
-				player.idle()
-			} else {
-				return;
-			}
-			e.preventDefault();
-		});
-
-		cont.addEventListener('keydown', function (e) {
-			if (e.code === 'ArrowLeft') {
-				player.walk(e.code)
-			} else if (e.code === 'ArrowRight') {
-				player.walk(e.code)
-			} else {
-				return;
-			}
-			e.preventDefault();
-		})
+		// cont.addEventListener('keydown', function (e) {
+		// 	if (e.code === 'ArrowLeft') {
+		// 		player.walk(e.code)
+		// 	} else if (e.code === 'ArrowRight') {
+		// 		player.walk(e.code)
+		// 	} else {
+		// 		return;
+		// 	}
+		// 	e.preventDefault();
+		// })
 
 	})
 

@@ -1,9 +1,9 @@
 import Konva from "konva";
-import { Player } from "./Player";
+import { NPC } from "./NPC";
 
 export class Game extends Konva.Stage {
 
-  private players: Player[]
+  private npcs: NPC[]
 
   constructor(container: HTMLDivElement, players: string[] = []) {
     super({
@@ -12,6 +12,6 @@ export class Game extends Konva.Stage {
 			height: container.clientHeight,
 		})
     this.add(new Konva.Layer())
-    this.players = players.map(p => new Player(p, this))
+    this.npcs = players.map(p => new NPC(p, this))
   }
 }

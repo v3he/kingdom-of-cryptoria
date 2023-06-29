@@ -11,7 +11,7 @@ const animationMetadata = {
   slashing: { frames: 12, width: 240, height: 200 }
 }
 
-export class Player {
+export class NPC {
 
   stage: Konva.Stage
   sprite: Konva.Sprite

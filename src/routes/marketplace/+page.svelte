@@ -1,5 +1,7 @@
 <script lang="ts">
 
+	import { Player } from '$lib/models/game/Player'
+
 	import Konva from 'konva'
 
 	import { onMount } from 'svelte'
@@ -14,59 +16,36 @@
 			height: container.clientHeight,
 		})
 
-		var layer = new Konva.Layer();
+		var layer = new Konva.Layer()
+		stage.add(layer)
 
-		// var cont = stage.container();
+		const player = new Player('f3331ee142860fd9833305cc4ce070f3', stage)
 
-		// cont.tabIndex = 1;
+		var cont = stage.container();
 
-		// cont.focus();
+		cont.tabIndex = 1;
 
-		// const DELTA = 10;
+		cont.focus();
 
-		// cont.addEventListener('keydown', function (e) {
-		// 	if (e.code === 'ArrowLeft') {
-		// 		circle.x(circle.x() - DELTA);
-		// 	} else if (e.code === 'ArrowUp') {
-		// 		circle.y(circle.y() - DELTA);
-		// 	} else if (e.code === 'ArrowRight') {
-		// 		circle.x(circle.x() + DELTA);
-		// 	} else if (e.code === 'ArrowDown') {
-		// 		circle.y(circle.y() + DELTA);
-		// 	} else {
-		// 		return;
-		// 	}
-		// 	e.preventDefault();
-		// });
+		cont.addEventListener('keyup', function (e) {
+			if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+				player.idle()
+			} else {
+				return;
+			}
+			e.preventDefault();
+		});
 
-		const imageObj = new Image()
-
-		const idleFrames: any = []
-
-		for (let i = 0; i < 18; i++) {
-			idleFrames.push(170 * i, 0, 170, 200)
-		}
-
-		imageObj.onload = function() {
-
-			const sprite = new Konva.Sprite({
-				x: stage.width() / 2,
-				y: stage.height() / 2,
-				image: imageObj,
-				animation: 'idle',
-				animations: {
-					idle: idleFrames
-				},
-				frameRate: 11,
-				frameIndex: 0,
-			})
-			layer.add(sprite)
-			stage.add(layer)
-			sprite.start()
-		}
-
-		// https://codeshack.io/images-sprite-sheet-generator/
-		imageObj.src = '/images/players/idle/spritesheet.png'
+		cont.addEventListener('keydown', function (e) {
+			if (e.code === 'ArrowLeft') {
+				player.walk(e.code)
+			} else if (e.code === 'ArrowRight') {
+				player.walk(e.code)
+			} else {
+				return;
+			}
+			e.preventDefault();
+		})
 
 	})
 

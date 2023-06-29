@@ -10,9 +10,13 @@ const animationMetadata = {
 
 export class Player {
 
+  stage: Konva.Stage
   sprite: Konva.Sprite
+  points: Konva.Circle[] = []
 
   constructor(trace: string, stage: Konva.Stage) {
+
+    this.stage = stage
 
     const imageObj = new Image();
 
@@ -42,6 +46,8 @@ export class Player {
 
     imageObj.src = `/images/players/${ trace }/spritesheet.png`;
 
+    this.createRandomPoints()
+
   }
 
   walk(direction) {
@@ -67,6 +73,27 @@ export class Player {
   idle() {
     this.sprite.animation('idle');
     this.sprite.start();
+  }
+
+  createRandomPoints(): void {
+
+    for (let i = 0; i < 7; i++) {
+
+      const x = 100 + Math.random() * (this.stage.width() - 200);
+      const y = this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 100);
+
+      this.points.push(new Konva.Circle({
+        x, y,
+        radius: 5,
+        fill: 'yellow',
+        stroke: 'black',
+        strokeWidth: 4,
+      }))
+
+    }
+
+    this.stage.getLayers()[0].add(...this.points)
+
   }
 
 }

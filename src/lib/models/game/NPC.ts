@@ -1,7 +1,10 @@
 import Konva from "konva"
 
+const width: number = 170
+const height: number = 200
+
 const GENERATION_RADIUS: number = 200
-const CHECKPOINT_RADIUS: number = 150 
+const CHECKPOINT_RADIUS: number = 150
 
 const animationMetadata = {
   idle: { frames: 18, width: 170, height: 200 },
@@ -32,11 +35,12 @@ export class NPC {
       }
     })
 
+    const x: number = (stage.width() / 2) - (width / 2)
+    const y: number = (stage.height() / 2) - (height - 30) + 100 // 100 is just padding, can be removed
+
     this.sprite = new Konva.Sprite({
-      x: stage.width() / 2,
-      y: stage.height() / 2,
-      width: 170,
-      height: 200,
+      x, y,
+      width, height,
       image: imageObj,
       animation: 'idle',
       animations: animations,
@@ -56,15 +60,12 @@ export class NPC {
 
   }
 
+  // calculates the position of our character's feet
   get position() {
-
-    let { x, y } = this.sprite.position()
-
-    x += 170 / 2 // player width
-    y += 200 - 30 // player height
-
-    return { x, y }
-
+    return {
+      x: this.sprite.position().x + width / 2,
+      y: this.sprite.position().y + height - 30
+    }
   }
 
   // walk(direction) {
@@ -125,12 +126,11 @@ export class NPC {
       const potentialDest = this.points[Math.floor(Math.random() * this.points.length)];
 
       const potentialDestPosition = potentialDest.position()
-      const currentPosition = this.position
 
       const distance = Math.sqrt(
-        Math.pow(potentialDestPosition.x - currentPosition.x, 2) +
-        Math.pow(potentialDestPosition.y - currentPosition.y, 2)
-      );
+        Math.pow(potentialDestPosition.x - this.position.x, 2) +
+        Math.pow(potentialDestPosition.y - this.position.y, 2)
+      )
 
       if (distance > CHECKPOINT_RADIUS) {
         potentialDest.fill('red')

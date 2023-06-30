@@ -54,48 +54,26 @@ export class NPC {
     imageObj.onload = () => {
       stage.getLayers()[0].add(this.sprite)
       this.sprite.start()
+      this.startRoute()
     }
 
     imageObj.src = `/images/players/${ trace }/spritesheet.png`;
 
     this.generateRoute(8)
-    this.startRoute()
-    // this.findNextCheckpoint()
 
   }
 
-  // calculates the position of our character's feet
-  get position() {
+  getFootPosition() {
     return {
       x: this.sprite.position().x + width / 2,
       y: this.sprite.position().y + height - 30
     }
   }
 
-  // walk(direction) {
-  //   switch (direction) {
-  //     case 'ArrowRight':
-  //       this.sprite.scaleX(1)
-  //       this.sprite.animation('walking')
-  //       this.sprite.offsetX(0);
-  //       this.sprite.x(this.sprite.x() + 2);
-  //       break
-  //     case 'ArrowLeft':
-  //       this.sprite.scaleX(-1)
-  //       this.sprite.animation('walking')
-  //       this.sprite.offsetX(170);
-  //       this.sprite.x(this.sprite.x() - 2);
-  //       break
-  //     default:
-  //       break
-  //   }
-  //   this.sprite.start();
-  // }
-
-  // idle() {
-  //   this.sprite.animation('idle');
-  //   this.sprite.start();
-  // }
+  setFootPosition(x, y) {
+    this.sprite.x(this.sprite.position().x + x)
+    this.sprite.y(this.sprite.position().y + y)
+  }
 
   private generateRoute(checkpoints: number): void {
     while (this.points.length < checkpoints) {
@@ -107,7 +85,7 @@ export class NPC {
         y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
       }
 
-      const { x, y } = this.position
+      const { x, y } = this.getFootPosition()
 
       if (Math.sqrt(Math.pow(potentialPoint.x - x, 2) + Math.pow(potentialPoint.y - y, 2)) > GENERATION_RADIUS) {
         this.points.push(new Konva.Circle({
@@ -130,10 +108,11 @@ export class NPC {
       const potentialDest = this.points[Math.floor(Math.random() * this.points.length)];
 
       const potentialDestPosition = potentialDest.position()
+      const currentPosition = this.getFootPosition()
 
       const distance = Math.sqrt(
-        Math.pow(potentialDestPosition.x - this.position.x, 2) +
-        Math.pow(potentialDestPosition.y - this.position.y, 2)
+        Math.pow(potentialDestPosition.x - currentPosition.x, 2) +
+        Math.pow(potentialDestPosition.y - currentPosition.y, 2)
       )
 
       if (distance > CHECKPOINT_RADIUS) {
@@ -157,6 +136,7 @@ export class NPC {
       if (this.hasReachedDestination()) {
         this.sprite.animation('idle');
         this.sprite.start();
+
         // Wait for a moment at the checkpoint
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -175,25 +155,50 @@ export class NPC {
 
       const { x, y } = this.destination.position()
 
-      const dx = x - this.sprite.x()
-      const dy = y - this.sprite.y()
+      const currentPosition = this.getFootPosition()
+      // console.log('current ::', currentPosition)
+
+      // this.stage.getLayers()[0].add(new Konva.Circle({
+      //   x: currentPosition.x,
+      //   y: currentPosition.y,
+      //   radius: 5,
+      //   fill: 'green',
+      //   stroke: 'black',
+      //   strokeWidth: 4,
+      // }))
+
+      // this.stage.getLayers()[0].add(new Konva.Circle({
+      //   x, y,
+      //   radius: 5,
+      //   fill: 'blue',
+      //   stroke: 'black',
+      //   strokeWidth: 4,
+      // }))
+
+      const dx = x - currentPosition.x//this.sprite.x()
+      const dy = y - currentPosition.y//this.sprite.y()
+
+      // console.log('destination :: ', dx, dy)
 
       const angle = Math.atan2(dy, dx);
       const velocity = 2;
 
-      this.sprite.x(this.sprite.x() + Math.cos(angle) * velocity);
-      this.sprite.y(this.sprite.y() + Math.sin(angle) * velocity);
+      // // this.sprite.x(this.sprite.x() + Math.cos(angle) * velocity);
+      // // this.sprite.y(this.sprite.y() + Math.sin(angle) * velocity);
+      this.setFootPosition(Math.cos(angle) * velocity, Math.sin(angle) * velocity)
 
       // Update the walking animation
       if (dx < 0) {
-        this.sprite.attrs.scaleX = -1 // Flip to the left
+        this.sprite.scaleX(-1)
+        this.sprite.offsetX(170)
       } else {
-        this.sprite.attrs.scaleX = 1 // Flip to the right
+        this.sprite.scaleX(1)
+        this.sprite.offsetX(0)
       }
       this.sprite.animation('walking');
       this.sprite.start();
 
-      setTimeout(() => resolve(true), 1000 / 60); // Move the player every 1/60th of a second
+      setTimeout(() => resolve(true), 1000 / 40); // Move the player every 1/60th of a second
     });
   }
 
@@ -201,8 +206,10 @@ export class NPC {
 
     const { x, y } = this.destination.position()
 
-    const dx = x - this.sprite.x()
-    const dy = y - this.sprite.y()
+    const currentPosition = this.getFootPosition()
+
+    const dx = x - currentPosition.x//this.sprite.x()
+    const dy = y - currentPosition.y//this.sprite.y()
 
     const distance = Math.sqrt(dx * dx + dy * dy)
 

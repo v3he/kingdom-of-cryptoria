@@ -20,6 +20,9 @@ export class NPC {
   sprite: Konva.Sprite
   points: Konva.Circle[] = []
 
+  isMoving: boolean
+  destination: Konva.Circle
+
   constructor(trace: string, stage: Konva.Stage) {
 
     this.stage = stage
@@ -56,7 +59,8 @@ export class NPC {
     imageObj.src = `/images/players/${ trace }/spritesheet.png`;
 
     this.generateRoute(8)
-    this.findNextCheckpoint()
+    this.startRoute()
+    // this.findNextCheckpoint()
 
   }
 
@@ -138,6 +142,71 @@ export class NPC {
       }
 
     }
+  }
+
+  private async startRoute() {
+
+    this.destination = this.findNextCheckpoint()
+
+    this.isMoving = true
+
+    while (this.isMoving) {
+
+      await this.moveTowardsDestination();
+
+      if (this.hasReachedDestination()) {
+        this.sprite.animation('idle');
+        this.sprite.start();
+        // Wait for a moment at the checkpoint
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Get the next checkpoint
+        this.destination = this.findNextCheckpoint();
+        if (!this.destination) {
+          // If there are no more checkpoints, stop moving
+          this.isMoving = false;
+        }
+      }
+    }
+  }
+
+  private moveTowardsDestination() {
+    return new Promise(resolve => {
+
+      const { x, y } = this.destination.position()
+
+      const dx = x - this.sprite.x()
+      const dy = y - this.sprite.y()
+
+      const angle = Math.atan2(dy, dx);
+      const velocity = 2;
+
+      this.sprite.x(this.sprite.x() + Math.cos(angle) * velocity);
+      this.sprite.y(this.sprite.y() + Math.sin(angle) * velocity);
+
+      // Update the walking animation
+      if (dx < 0) {
+        this.sprite.attrs.scaleX = -1 // Flip to the left
+      } else {
+        this.sprite.attrs.scaleX = 1 // Flip to the right
+      }
+      this.sprite.animation('walking');
+      this.sprite.start();
+
+      setTimeout(() => resolve(true), 1000 / 60); // Move the player every 1/60th of a second
+    });
+  }
+
+  private hasReachedDestination() {
+
+    const { x, y } = this.destination.position()
+
+    const dx = x - this.sprite.x()
+    const dy = y - this.sprite.y()
+
+    const distance = Math.sqrt(dx * dx + dy * dy)
+
+    return distance < 2 // If the player is within 2 units of the destination, consider it reached
   }
 
 }

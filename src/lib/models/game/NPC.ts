@@ -1,20 +1,20 @@
 import Konva from 'konva'
 import { Animation } from '$lib/types/Animation'
 
-const WIDTH: number = 170
-const HEIGHT: number = 200
+const WIDTH: number = 250
+const HEIGHT: number = 250
 const VELOCITY: number = 2
 
-const GENERATION_RADIUS: number = 200
-const CHECKPOINT_RADIUS: number = 150
+const GENERATION_RADIUS: number = 250
+const CHECKPOINT_RADIUS: number = 200
 const CHECKPOINT_NUMBER: number = 8
 
 const ANIMATIONS = {
-	[Animation.IDLE]: { frames: 18, width: 170, height: 200 },
-	[Animation.BLINKING]: { frames: 18, width: 170, height: 200 },
-	[Animation.KICKING]: { frames: 12, width: 170, height: 200 },
-	[Animation.WALKING]: { frames: 24, width: 170, height: 200 },
-	[Animation.SLASHING]: { frames: 12, width: 240, height: 200 }
+	[Animation.IDLE]: { frames: 18 },
+	[Animation.BLINKING]: { frames: 18 },
+	[Animation.KICKING]: { frames: 12 },
+	[Animation.WALKING]: { frames: 24 },
+	[Animation.SLASHING]: { frames: 12 }
 }
 
 interface Point {
@@ -36,8 +36,8 @@ export class NPC {
 		const imageObj = new Image()
 
 		this.sprite = new Konva.Sprite({
-			x: stage.width() / 2 - WIDTH / 2,
-      y: stage.height() / 2 - (HEIGHT - 30) + 100, // adds padding, its safe to remove
+			x: stage.width() / 2 - WIDTH / 2 + 20, // adds padding, its safe to remove
+      y: stage.height() / 2 - (HEIGHT - 30) + 150, // adds padding, its safe to remove
 			width: WIDTH,
 			height: HEIGHT,
 			image: imageObj,
@@ -59,15 +59,15 @@ export class NPC {
 	}
 
   private createAnimationFrames(): Record<string, number[]> {
-    return Object.entries(ANIMATIONS).reduce((animations, [key, { frames, width, height }], index) => {
-      animations[key] = Array.from({ length: frames }, (_, i) => [width * i, height * index, width, height]).flat()
+    return Object.entries(ANIMATIONS).reduce((animations, [key, { frames }], index) => {
+      animations[key] = Array.from({ length: frames }, (_, i) => [WIDTH * i, HEIGHT * index, WIDTH, HEIGHT]).flat()
       return animations;
     }, {} as Record<string, number[]>);
   }
 
 	private getFootPosition() {
 		return {
-			x: this.sprite.position().x + WIDTH / 2,
+			x: this.sprite.position().x + WIDTH / 2 + 20,
 			y: this.sprite.position().y + HEIGHT - 30
 		}
 	}

@@ -9,7 +9,7 @@
 
 		var game = GameFactory
 			.container(container)
-			.players('f3331ee142860fd9833305cc4ce070f3')
+			.players('d159ef156e3c30c243101b416e481167')
 			.build()
 
 	})

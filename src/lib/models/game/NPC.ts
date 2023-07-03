@@ -1,204 +1,163 @@
-import Konva from "konva"
+import Konva from 'konva'
+import { Animation } from '$lib/types/Animation'
 
-const width: number = 170
-const height: number = 200
+const WIDTH: number = 170
+const HEIGHT: number = 200
+const VELOCITY: number = 2
 
 const GENERATION_RADIUS: number = 200
 const CHECKPOINT_RADIUS: number = 150
+const CHECKPOINT_NUMBER: number = 8
 
-const animationMetadata = {
-  idle: { frames: 18, width: 170, height: 200 },
-  blinking: { frames: 18, width: 170, height: 200 },
-  kicking: { frames: 12, width: 170, height: 200 },
-  walking: { frames: 24, width: 170, height: 200 },
-  slashing: { frames: 12, width: 240, height: 200 }
+const ANIMATIONS = {
+	[Animation.IDLE]: { frames: 18, width: 170, height: 200 },
+	[Animation.BLINKING]: { frames: 18, width: 170, height: 200 },
+	[Animation.KICKING]: { frames: 12, width: 170, height: 200 },
+	[Animation.WALKING]: { frames: 24, width: 170, height: 200 },
+	[Animation.SLASHING]: { frames: 12, width: 240, height: 200 }
+}
+
+interface Point {
+	x: number
+	y: number
 }
 
 export class NPC {
+	stage: Konva.Stage
+	sprite: Konva.Sprite
 
-  stage: Konva.Stage
-  sprite: Konva.Sprite
-  points: Konva.Circle[] = []
+	points: Point[] = []
+	isMoving: boolean
+	destination: Point
 
-  isMoving: boolean
-  destination: Konva.Circle
+	constructor(trace: string, stage: Konva.Stage) {
+		this.stage = stage
 
-  constructor(trace: string, stage: Konva.Stage) {
+		const imageObj = new Image()
 
-    this.stage = stage
+		this.sprite = new Konva.Sprite({
+			x: stage.width() / 2 - WIDTH / 2,
+      y: stage.height() / 2 - (HEIGHT - 30) + 100, // 100 is just padding, can be removed
+			width: WIDTH,
+			height: HEIGHT,
+			image: imageObj,
+			animation: Animation.IDLE,
+			animations: this.createAnimationFrames(),
+			frameRate: 13,
+			frameIndex: 0
+		})
 
-    const imageObj = new Image();
+		imageObj.onload = () => {
+			stage.getLayers()[0].add(this.sprite)
+			this.sprite.start()
+			this.startRoute()
+		}
 
-    const animations = {}
+		imageObj.src = `/images/players/${trace}/spritesheet.png`
 
-    Object.entries(animationMetadata).forEach(([key, value], index) => {
-      animations[key] = animations[key] || []
-      for (let i = 0; i < value.frames; i++) {
-        animations[key].push(value.width * i, value.height * index, value.width, value.height)
-      }
-    })
+		this.generateRoute(CHECKPOINT_NUMBER)
+	}
 
-    const x: number = (stage.width() / 2) - (width / 2)
-    const y: number = (stage.height() / 2) - (height - 30) + 100 // 100 is just padding, can be removed
-
-    this.sprite = new Konva.Sprite({
-      x, y,
-      width, height,
-      image: imageObj,
-      animation: 'idle',
-      animations: animations,
-      frameRate: 13,
-      frameIndex: 0
-    });
-
-    imageObj.onload = () => {
-      stage.getLayers()[0].add(this.sprite)
-      this.sprite.start()
-      this.startRoute()
-    }
-
-    imageObj.src = `/images/players/${ trace }/spritesheet.png`;
-
-    this.generateRoute(8)
-
+  private createAnimationFrames(): Record<string, number[]> {
+    return Object.entries(ANIMATIONS).reduce((animations, [key, { frames, width, height }], index) => {
+      animations[key] = Array.from({ length: frames }, (_, i) => [width * i, height * index, width, height]).flat()
+      return animations;
+    }, {} as Record<string, number[]>);
   }
 
-  getFootPosition() {
-    return {
-      x: this.sprite.position().x + width / 2,
-      y: this.sprite.position().y + height - 30
-    }
-  }
+	private getFootPosition() {
+		return {
+			x: this.sprite.position().x + WIDTH / 2,
+			y: this.sprite.position().y + HEIGHT - 30
+		}
+	}
 
-  setFootPosition(x, y) {
-    this.sprite.x(this.sprite.position().x + x)
-    this.sprite.y(this.sprite.position().y + y)
-  }
+	private setFootPosition(x: number, y: number) {
+		this.sprite
+      .x(this.sprite.position().x + x)
+      .y(this.sprite.position().y + y)
+	}
 
-  private generateRoute(checkpoints: number): void {
-    while (this.points.length < checkpoints) {
+	private setAnimation(animation: Animation, scaleX = 1) {
+		this.sprite
+			.scaleX(scaleX)
+			.offsetX(scaleX === -1 ? WIDTH : 0)
+			.animation(animation)
+			.start()
+	}
 
-      // point should be with a padding of 100px from left and right
-      // point should be with a padding of 45% top and 150px bottom
-      const potentialPoint = {
-        x: 100 + Math.random() * (this.stage.width() - 200),
-        y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
-      }
+	private calculateDistance(a: Point, b: Point) {
+		const dx = a.x - b.x
+		const dy = a.y - b.y
+		return Math.sqrt(dx * dx + dy * dy)
+	}
 
-      const currentPosition = this.getFootPosition();
-      const dist = this.calculateDistance(potentialPoint, currentPosition);
+	private generateRoute(checkpoints: number): void {
+		while (this.points.length < checkpoints) {
+			// point should be with a padding of 100px from left and right
+			// point should be with a padding of 45% top and 150px bottom
+			const potentialPoint: Point = {
+				x: 100 + Math.random() * (this.stage.width() - 200),
+				y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
+			}
 
-      if (dist > GENERATION_RADIUS) {
-        const pointCircle = new Konva.Circle({
-          ...potentialPoint,
-          radius: 5,
-          fill: 'yellow',
-          stroke: 'black',
-          strokeWidth: 4,
-        });
-        this.points.push(pointCircle);
-      }
-    }
+			const currentPosition = this.getFootPosition()
+			const dist = this.calculateDistance(potentialPoint, currentPosition)
 
-    this.stage.getLayers()[0].add(...this.points)
+			if (dist > GENERATION_RADIUS) {
+				this.points.push(potentialPoint)
+			}
+		}
+	}
 
-  }
+	private findNextCheckpoint(): Point {
+		while (true) {
+			const potentialDest = this.points[Math.floor(Math.random() * this.points.length)]
+			if (this.calculateDistance(potentialDest, this.getFootPosition()) > CHECKPOINT_RADIUS) {
+				return potentialDest
+			}
+		}
+	}
 
-  private findNextCheckpoint(): Konva.Circle {
-    while (true) {
-      const potentialDest = this.points[Math.floor(Math.random() * this.points.length)];
-      const currentPosition = this.getFootPosition();
+	private moveTowardsDestination(): Promise<void> {
+		return new Promise((resolve) => {
 
-      const dist = this.calculateDistance(potentialDest.position(), currentPosition);
+			const currentPosition = this.getFootPosition()
 
-      if (dist > CHECKPOINT_RADIUS) {
-        potentialDest.fill('red');
-        return potentialDest;
-      }
-    }
-  }
+			const dx = this.destination.x - currentPosition.x
+			const dy = this.destination.y - currentPosition.y
+			const angle = Math.atan2(dy, dx)
 
-  private async startRoute(): Promise<void> {
+			this.setFootPosition(Math.cos(angle) * VELOCITY, Math.sin(angle) * VELOCITY)
+			this.setAnimation(Animation.WALKING, dx < 0 ? -1 : 1)
 
-    this.isMoving = true;
-    this.destination = this.findNextCheckpoint();
+			setTimeout(() => resolve(), 1000 / 40)
 
-    while (this.isMoving) {
+		})
+	}
 
-      await this.moveTowardsDestination();
+	private hasReachedDestination(): boolean {
+		return this.calculateDistance(this.getFootPosition(), this.destination) < 2
+	}
 
-      if (this.hasReachedDestination()) {
-        this.sprite.animation('idle').start()
-        const delay = Math.floor(Math.random() * (45 - 10 + 1) + 10) * 1000;
-        await new Promise(resolve => setTimeout(resolve, delay));
-        this.destination = this.findNextCheckpoint();
-        this.isMoving = !!this.destination;
-      }
-    }
-  }
+	private async startRoute(): Promise<void> {
+		this.isMoving = true
+		this.destination = this.findNextCheckpoint()
+		while (this.isMoving) {
+			await this.moveTowardsDestination()
 
-  // private async startRoute() {
+			if (this.hasReachedDestination()) {
 
-  //   this.destination = this.findNextCheckpoint()
+				this.setAnimation(Animation.IDLE, this.sprite.scaleX())
 
-  //   this.isMoving = true
+				const delay = Math.floor(Math.random() * (45 - 10 + 1) + 10) * 1000
+				await new Promise((resolve) => setTimeout(resolve, delay))
 
-  //   while (this.isMoving) {
+				this.destination = this.findNextCheckpoint()
+				this.isMoving = !!this.destination
 
-  //     await this.moveTowardsDestination()
-
-  //     if (this.hasReachedDestination()) {
-
-  //       this.sprite.animation('idle')
-  //       this.sprite.start()
-
-  //       await new Promise(resolve => setTimeout(resolve, 1000));
-
-  //       this.destination = this.findNextCheckpoint();
-  //       if (!this.destination) {
-  //         this.isMoving = false;
-  //       }
-  //     }
-  //   }
-  // }
-
-  private setAnimation(animation: 'idle' | 'walking', scaleX = 1) {
-    this.sprite.scaleX(scaleX);
-    this.sprite.offsetX(scaleX === -1 ? 170 : 0);
-    this.sprite.animation(animation);
-    this.sprite.start();
-  }
-
-  private moveTowardsDestination(): Promise<void> {
-    return new Promise(resolve => {
-
-      const currentPosition = this.getFootPosition();
-      const { x, y } = this.destination.position();
-
-      const dx = x - currentPosition.x;
-      const dy = y - currentPosition.y;
-      const angle = Math.atan2(dy, dx);
-      const velocity = 2;
-
-      this.setFootPosition(Math.cos(angle) * velocity, Math.sin(angle) * velocity)
-
-      this.setAnimation('walking', dx < 0 ? -1 : 1);
-
-      setTimeout(() => resolve(), 1000 / 40);
-
-    });
-  }
-
-  private hasReachedDestination(): boolean {
-    const currentPosition = this.getFootPosition();
-    const destinationPosition = this.destination.position();
-    return this.calculateDistance(currentPosition, destinationPosition) < 2;
-  }
-
-  private calculateDistance(pointA, pointB) {
-    const dx = pointA.x - pointB.x;
-    const dy = pointA.y - pointB.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
+			}
+		}
+	}
 
 }

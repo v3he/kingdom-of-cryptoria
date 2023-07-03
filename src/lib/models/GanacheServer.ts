@@ -27,7 +27,6 @@ const defaultOptions = {
 }
 
 export class GanacheServer {
-
 	provider: JsonRpcProvider
 	signer: JsonRpcSigner
 	accounts: Account[]
@@ -39,7 +38,6 @@ export class GanacheServer {
 	}
 
 	static async start(): Promise<GanacheServer> {
-
 		await new Promise((resolve, reject) => {
 			const server = ganache.server(defaultOptions)
 			server.listen(PORT, (err) => (err ? reject() : resolve(server.provider)))
@@ -57,11 +55,9 @@ export class GanacheServer {
 			.map(([pub, priv]) => new Account(pub, priv as string))
 
 		return new GanacheServer(provider, signer, accounts)
-
 	}
 
 	async deploy(): Promise<void> {
-
 		const marketplace = new Marketplace(this.signer)
 
 		const compileOptions = {
@@ -74,7 +70,9 @@ export class GanacheServer {
 
 		const compiledOutput = JSON.parse(
 			solc.compile(JSON.stringify(compileOptions), {
-				import: (d: string) => ({ contents: fs.readFileSync(path.join('node_modules', d), { encoding: 'utf8', flag: 'r' }) })
+				import: (d: string) => ({
+					contents: fs.readFileSync(path.join('node_modules', d), { encoding: 'utf8', flag: 'r' })
+				})
 			})
 		)
 
@@ -98,9 +96,7 @@ export class GanacheServer {
 			new NFT('QmYdyzy2m7H6MGx3PQYLM3yqDvGWgBuXrjY5ARTUy7krma'),
 			new NFT('QmWRPcjtGMsSS9aofAdKmLNfVoCokq4yvbgfUjr2ufDNyM'),
 			new NFT('QmZXE6yGgMXbEcrakqUnre17MNvJ5G8sqwQV7YDkbRxhF2'),
-			new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T'),
+			new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T')
 		])
-
 	}
-
 }

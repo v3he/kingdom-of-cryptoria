@@ -6,7 +6,6 @@ import type { Sources } from '$lib/types/Source'
 const CONTRACTS_PATH: string = './src/lib/contracts'
 
 export class SmartContract {
-
 	private _name: string
 	private _content: string
 	private _abi: string
@@ -17,7 +16,10 @@ export class SmartContract {
 	constructor(name: string, dependencies: SmartContract[] = []) {
 		this._name = name
 		this._dependencies = dependencies
-		this._content = fs.readFileSync(path.join(CONTRACTS_PATH, this.fullname), { encoding: 'utf8', flag: 'r' })
+		this._content = fs.readFileSync(path.join(CONTRACTS_PATH, this.fullname), {
+			encoding: 'utf8',
+			flag: 'r'
+		})
 	}
 
 	get abi(): string {
@@ -33,7 +35,7 @@ export class SmartContract {
 	}
 
 	get fullname(): string {
-		return `${ this._name }.sol`
+		return `${this._name}.sol`
 	}
 
 	set dependencies(dependencies: SmartContract | SmartContract[]) {
@@ -45,16 +47,17 @@ export class SmartContract {
 	}
 
 	get sources(): Sources {
-		return this._dependencies.reduce((sources, dependency: SmartContract) => {
-			sources[dependency.fullname] = { content: dependency._content }
-			return sources
-		}, { [this.fullname]: { content: this._content } })
+		return this._dependencies.reduce(
+			(sources, dependency: SmartContract) => {
+				sources[dependency.fullname] = { content: dependency._content }
+				return sources
+			},
+			{ [this.fullname]: { content: this._content } }
+		)
 	}
 
 	async deploy(compiledOutput: any, signer: JsonRpcSigner): Promise<void> {
-
 		const deployContract = async (dep: SmartContract, parameters: any[] = []) => {
-
 			dep._abi = compiledOutput.contracts[dep.fullname][dep._name].abi
 			dep._bytecode = compiledOutput.contracts[dep.fullname][dep._name].evm.bytecode.object
 
@@ -62,7 +65,6 @@ export class SmartContract {
 			const contract = await factory.deploy(...parameters)
 
 			dep._contract = new ethers.Contract(contract.target as string, dep._abi, signer)
-
 		}
 
 		for (const dep of this._dependencies) {
@@ -70,7 +72,5 @@ export class SmartContract {
 		}
 
 		await deployContract(this, [signer.address, ...this._dependencies.map((d) => d.address)])
-
 	}
-
 }

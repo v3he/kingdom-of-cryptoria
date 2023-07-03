@@ -6,10 +6,16 @@
   let container: HTMLDivElement
 
   onMount(() => {
-    var game = GameFactory
-      .container(container)
-      .players('d159ef156e3c30c243101b416e481167')
-      .build()
+    //   if (!window.ethereum?.isMetaMask || !(await $wallet.isConnected())) {
+    // 		return goto('/')
+    // 	}
+
+    // 	$wallet.startEventListeners()
+    // 	$wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
+
+    // 	wallet.set($wallet)
+
+    var game = GameFactory.container(container).players('d159ef156e3c30c243101b416e481167').build()
   })
 </script>
 

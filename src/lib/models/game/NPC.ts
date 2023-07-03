@@ -97,10 +97,10 @@ export class NPC {
 
   private generateRoute(checkpoints: number): void {
     while (this.points.length < checkpoints) {
-      // x: adds 100px padding to the left and right
+      // x: adds 150px padding to the left and right
       // y: adds 45% padding to the top and 150px to the bottom
       const potentialPoint: Point = {
-        x: 100 + Math.random() * (this.stage.width() - 200),
+        x: 150 + Math.random() * (this.stage.width() - 300),
         y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
       }
 

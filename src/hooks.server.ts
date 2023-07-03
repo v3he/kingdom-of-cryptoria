@@ -4,12 +4,12 @@ import type { Handle } from '@sveltejs/kit'
 // let ganacheServer: GanacheServer
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// if (!ganacheServer) {
-	// 	ganacheServer = await GanacheServer.start()
-	// 	await ganacheServer.deploy()
-	// }
+  // if (!ganacheServer) {
+  // 	ganacheServer = await GanacheServer.start()
+  // 	await ganacheServer.deploy()
+  // }
 
-	// event.locals.server = ganacheServer
+  // event.locals.server = ganacheServer
 
-	return await resolve(event)
+  return await resolve(event)
 }

@@ -1,7 +1,7 @@
 export class NFT {
-	metadata: string
+  metadata: string
 
-	constructor(metadata: string) {
-		this.metadata = `ipfs://${metadata}`
-	}
+  constructor(metadata: string) {
+    this.metadata = `ipfs://${metadata}`
+  }
 }

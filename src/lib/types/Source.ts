@@ -1,5 +1,5 @@
 export interface Sources {
-	[key: string]: {
-		content: string
-	}
+  [key: string]: {
+    content: string
+  }
 }

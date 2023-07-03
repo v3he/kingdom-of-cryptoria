@@ -37,7 +37,7 @@ export class NPC {
 
 		this.sprite = new Konva.Sprite({
 			x: stage.width() / 2 - WIDTH / 2,
-      y: stage.height() / 2 - (HEIGHT - 30) + 100, // 100 is just padding, can be removed
+      y: stage.height() / 2 - (HEIGHT - 30) + 100, // adds padding, its safe to remove
 			width: WIDTH,
 			height: HEIGHT,
 			image: imageObj,
@@ -94,19 +94,18 @@ export class NPC {
 
 	private generateRoute(checkpoints: number): void {
 		while (this.points.length < checkpoints) {
-			// point should be with a padding of 100px from left and right
-			// point should be with a padding of 45% top and 150px bottom
+
+			// x: adds 100px padding to the left and right
+      // y: adds 45% padding to the top and 150px to the bottom
 			const potentialPoint: Point = {
 				x: 100 + Math.random() * (this.stage.width() - 200),
 				y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
 			}
 
-			const currentPosition = this.getFootPosition()
-			const dist = this.calculateDistance(potentialPoint, currentPosition)
-
-			if (dist > GENERATION_RADIUS) {
+			if (this.calculateDistance(potentialPoint, this.getFootPosition()) > GENERATION_RADIUS) {
 				this.points.push(potentialPoint)
 			}
+
 		}
 	}
 
@@ -131,6 +130,7 @@ export class NPC {
 			this.setFootPosition(Math.cos(angle) * VELOCITY, Math.sin(angle) * VELOCITY)
 			this.setAnimation(Animation.WALKING, dx < 0 ? -1 : 1)
 
+      // walking speed is 1/40 of a second
 			setTimeout(() => resolve(), 1000 / 40)
 
 		})
@@ -150,6 +150,7 @@ export class NPC {
 
 				this.setAnimation(Animation.IDLE, this.sprite.scaleX())
 
+        // waits between 10 and 45 secons to start walking again
 				const delay = Math.floor(Math.random() * (45 - 10 + 1) + 10) * 1000
 				await new Promise((resolve) => setTimeout(resolve, delay))
 

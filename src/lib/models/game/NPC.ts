@@ -85,16 +85,18 @@ export class NPC {
         y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
       }
 
-      const { x, y } = this.getFootPosition()
+      const currentPosition = this.getFootPosition();
+      const dist = this.calculateDistance(potentialPoint, currentPosition);
 
-      if (Math.sqrt(Math.pow(potentialPoint.x - x, 2) + Math.pow(potentialPoint.y - y, 2)) > GENERATION_RADIUS) {
-        this.points.push(new Konva.Circle({
+      if (dist > GENERATION_RADIUS) {
+        const pointCircle = new Konva.Circle({
           ...potentialPoint,
           radius: 5,
           fill: 'yellow',
           stroke: 'black',
           strokeWidth: 4,
-        }))
+        });
+        this.points.push(pointCircle);
       }
     }
 
@@ -104,94 +106,99 @@ export class NPC {
 
   private findNextCheckpoint(): Konva.Circle {
     while (true) {
-
       const potentialDest = this.points[Math.floor(Math.random() * this.points.length)];
+      const currentPosition = this.getFootPosition();
 
-      const potentialDestPosition = potentialDest.position()
-      const currentPosition = this.getFootPosition()
+      const dist = this.calculateDistance(potentialDest.position(), currentPosition);
 
-      const distance = Math.sqrt(
-        Math.pow(potentialDestPosition.x - currentPosition.x, 2) +
-        Math.pow(potentialDestPosition.y - currentPosition.y, 2)
-      )
-
-      if (distance > CHECKPOINT_RADIUS) {
-        potentialDest.fill('red')
-        return potentialDest
+      if (dist > CHECKPOINT_RADIUS) {
+        potentialDest.fill('red');
+        return potentialDest;
       }
-
     }
   }
 
-  private async startRoute() {
+  private async startRoute(): Promise<void> {
 
-    this.destination = this.findNextCheckpoint()
-
-    this.isMoving = true
+    this.isMoving = true;
+    this.destination = this.findNextCheckpoint();
 
     while (this.isMoving) {
 
-      await this.moveTowardsDestination()
+      await this.moveTowardsDestination();
 
       if (this.hasReachedDestination()) {
-
-        this.sprite.animation('idle')
-        this.sprite.start()
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
+        this.sprite.animation('idle').start()
+        const delay = Math.floor(Math.random() * (45 - 10 + 1) + 10) * 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
         this.destination = this.findNextCheckpoint();
-        if (!this.destination) {
-          this.isMoving = false;
-        }
+        this.isMoving = !!this.destination;
       }
     }
   }
 
-  private moveTowardsDestination() {
+  // private async startRoute() {
+
+  //   this.destination = this.findNextCheckpoint()
+
+  //   this.isMoving = true
+
+  //   while (this.isMoving) {
+
+  //     await this.moveTowardsDestination()
+
+  //     if (this.hasReachedDestination()) {
+
+  //       this.sprite.animation('idle')
+  //       this.sprite.start()
+
+  //       await new Promise(resolve => setTimeout(resolve, 1000));
+
+  //       this.destination = this.findNextCheckpoint();
+  //       if (!this.destination) {
+  //         this.isMoving = false;
+  //       }
+  //     }
+  //   }
+  // }
+
+  private setAnimation(animation: 'idle' | 'walking', scaleX = 1) {
+    this.sprite.scaleX(scaleX);
+    this.sprite.offsetX(scaleX === -1 ? 170 : 0);
+    this.sprite.animation(animation);
+    this.sprite.start();
+  }
+
+  private moveTowardsDestination(): Promise<void> {
     return new Promise(resolve => {
 
-      const { x, y } = this.destination.position()
+      const currentPosition = this.getFootPosition();
+      const { x, y } = this.destination.position();
 
-      const currentPosition = this.getFootPosition()
-
-      const dx = x - currentPosition.x
-      const dy = y - currentPosition.y
-
+      const dx = x - currentPosition.x;
+      const dy = y - currentPosition.y;
       const angle = Math.atan2(dy, dx);
       const velocity = 2;
 
       this.setFootPosition(Math.cos(angle) * velocity, Math.sin(angle) * velocity)
 
-      // Update the walking animation
-      if (dx < 0) {
-        this.sprite.scaleX(-1)
-        this.sprite.offsetX(170)
-      } else {
-        this.sprite.scaleX(1)
-        this.sprite.offsetX(0)
-      }
+      this.setAnimation('walking', dx < 0 ? -1 : 1);
 
-      this.sprite.animation('walking');
-      this.sprite.start();
-
-      setTimeout(() => resolve(true), 1000 / 40)
+      setTimeout(() => resolve(), 1000 / 40);
 
     });
   }
 
-  private hasReachedDestination() {
+  private hasReachedDestination(): boolean {
+    const currentPosition = this.getFootPosition();
+    const destinationPosition = this.destination.position();
+    return this.calculateDistance(currentPosition, destinationPosition) < 2;
+  }
 
-    const { x, y } = this.destination.position()
-
-    const currentPosition = this.getFootPosition()
-
-    const dx = x - currentPosition.x
-    const dy = y - currentPosition.y
-
-    const distance = Math.sqrt(dx * dx + dy * dy)
-
-    return distance < 2 // If the player is within 2 units of the destination, consider it reached
+  private calculateDistance(pointA, pointB) {
+    const dx = pointA.x - pointB.x;
+    const dy = pointA.y - pointB.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
 }

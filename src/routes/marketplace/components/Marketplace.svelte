@@ -2,34 +2,36 @@
 
   import close from '$lib/assets/images/close-button.png'
 
-  let isOpen = true
-  let isMarketplace = false
+  let isOpen: boolean = false
+  let isMarketplace: boolean = false
 
 </script>
 
-{#if isOpen}
   <div class="marketplace__container">
-    <div class="stone-background__container">
-      <button class="close-button" on:click={() => isOpen = false}>
-        <img src="{close}" alt="Close Button">
-      </button>
-      <div class="parchment-background__container">
-        <ul>
-          <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={isMarketplace}><a href="#" on:click={() => isMarketplace = true}>MARKETPLACE</a></li>
-          <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={!isMarketplace}><a href="#" on:click={() => isMarketplace = false}>MY NFT's</a></li>
-        </ul>
+    {#if isOpen}
+      <div class="stone-background__container">
+        <button class="close-button" on:click={() => isOpen = false}>
+          <img src="{close}" alt="Close Button">
+        </button>
+        <div class="parchment-background__container">
+          <ul>
+            <!-- svelte-ignore a11y-invalid-attribute -->
+            <li class:active={isMarketplace}><a href="#" on:click={() => isMarketplace = true}>MARKETPLACE</a></li>
+            <!-- svelte-ignore a11y-invalid-attribute -->
+            <li class:active={!isMarketplace}><a href="#" on:click={() => isMarketplace = false}>MY NFT's</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
+    {/if}
+    <button class="open-marketplace" on:click={() => isOpen = true}></button>
   </div>
-{/if}
+
 
 <style lang="scss">
 
   @font-face {
-    font-family: 'BMYEONSUNG';
-    src: url('$lib/assets/fonts/BMYEONSUNG.ttf') format('truetype');
+    font-family: 'SangSangRockRegular';
+    src: url('$lib/assets/fonts/SangSangRockRegular.ttf') format('truetype');
   }
 
   .marketplace__container {
@@ -41,6 +43,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .open-marketplace {
+      padding: 0;
+      right: 40px;
+      bottom: 40px;
+      position: absolute;
+      border: none;
+      width: 200px;
+      height: 70px;
+      cursor: pointer;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      background-image: url('$lib/assets/images/open-market.png');
+      &:hover {
+        background-image: url('$lib/assets/images/open-market-pressed.png');
+      }
+    }
 
     .stone-background__container {
 
@@ -73,7 +93,7 @@
         width: 885px;
         height: 570px;
         padding: 50px;
-        font-family: 'BMYEONSUNG', sans-serif;
+        font-family: 'SangSangRockRegular', sans-serif;
         background: url('$lib/assets/images/board-parchment.png') no-repeat center/contain;
         background-size: contain;
         -o-background-size: contain;
@@ -83,7 +103,7 @@
         ul {
           list-style-type: none;
           padding-left: 0;
-          margin: 15px auto;
+          margin: 10px auto;
           width: fit-content;
 
           li {
@@ -113,7 +133,6 @@
             a {
               color: #000;
               font-size: 1.7rem;
-              font-weight: bold;
               text-decoration: none;
             }
 

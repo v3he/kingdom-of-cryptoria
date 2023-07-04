@@ -1,41 +1,40 @@
 <script lang="ts">
-
   import close from '$lib/assets/images/close-button.png'
 
   let isOpen: boolean = false
   let isMarketplace: boolean = false
-
 </script>
 
-  <div class="marketplace__container">
-    {#if isOpen}
-      <div class="stone-background__container">
-        <button class="close-button" on:click={() => isOpen = false}>
-          <img src="{close}" alt="Close Button">
-        </button>
-        <div class="parchment-background__container">
-          <ul>
-            <!-- svelte-ignore a11y-invalid-attribute -->
-            <li class:active={isMarketplace}><a href="#" on:click={() => isMarketplace = true}>MARKETPLACE</a></li>
-            <!-- svelte-ignore a11y-invalid-attribute -->
-            <li class:active={!isMarketplace}><a href="#" on:click={() => isMarketplace = false}>MY NFT's</a></li>
-          </ul>
-        </div>
+<div class="marketplace__container">
+  {#if isOpen}
+    <div class="stone-background__container">
+      <button class="close-button" on:click={() => (isOpen = false)}>
+        <img src={close} alt="Close Button" />
+      </button>
+      <div class="parchment-background__container">
+        <ul>
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <li class:active={isMarketplace}>
+            <a href="#" on:click={() => (isMarketplace = true)}>MARKETPLACE</a>
+          </li>
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <li class:active={!isMarketplace}>
+            <a href="#" on:click={() => (isMarketplace = false)}>MY NFT's</a>
+          </li>
+        </ul>
       </div>
-    {/if}
-    <button class="open-marketplace" on:click={() => isOpen = true}></button>
-  </div>
-
+    </div>
+  {/if}
+  <button class="open-marketplace" on:click={() => (isOpen = true)} />
+</div>
 
 <style lang="scss">
-
   @font-face {
     font-family: 'SangSangRockRegular';
     src: url('$lib/assets/fonts/SangSangRockRegular.ttf') format('truetype');
   }
 
   .marketplace__container {
-
     z-index: 2;
     width: 100%;
     height: 100%;
@@ -63,7 +62,6 @@
     }
 
     .stone-background__container {
-
       width: 923px;
       height: 619px;
       position: relative;
@@ -107,7 +105,6 @@
           width: fit-content;
 
           li {
-
             display: inline;
             position: relative;
 
@@ -116,7 +113,7 @@
             }
 
             &::after {
-              content: "";
+              content: '';
               position: absolute;
               left: 0;
               bottom: -5px;
@@ -135,11 +132,9 @@
               font-size: 1.7rem;
               text-decoration: none;
             }
-
           }
         }
       }
- 
     }
- }
+  }
 </style>

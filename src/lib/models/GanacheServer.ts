@@ -30,6 +30,7 @@ export class GanacheServer {
   provider: JsonRpcProvider
   signer: JsonRpcSigner
   accounts: Account[]
+  marketplace: Marketplace
 
   constructor(provider: JsonRpcProvider, signer: JsonRpcSigner, accounts: Account[]) {
     this.provider = provider
@@ -58,11 +59,11 @@ export class GanacheServer {
   }
 
   async deploy(): Promise<void> {
-    const marketplace = new Marketplace(this.signer)
+    this.marketplace = new Marketplace(this.signer)
 
     const compileOptions = {
       language: 'Solidity',
-      sources: marketplace.sources,
+      sources: this.marketplace.sources,
       settings: {
         outputSelection: { '*': { '*': ['*'] } }
       }
@@ -80,8 +81,8 @@ export class GanacheServer {
       throw 'error while compiling smart contracts'
     }
 
-    await marketplace.deploy(compiledOutput)
-    await marketplace.mint([
+    await this.marketplace.deploy(compiledOutput)
+    await this.marketplace.mint([
       new NFT('QmcyHKkesUQ3RmLQJQDLst9akCmfroRmcuVr2xemrEUCXz'),
       new NFT('QmdLxKcotujCJJd2H6fkgcMKA9oMNmrU6aU4XwWWELqbgH'),
       new NFT('QmSmYyn9GjCAbaNVeGiK4BbB5m8zhK4Tb4RbbvYwuckHoS'),

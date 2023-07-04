@@ -1,22 +1,30 @@
 <script lang="ts">
-  import { GameFactory } from '$lib/models/game/GameFactory'
-
   import { onMount } from 'svelte'
+  import { ethers } from 'ethers'
+  import { wallet } from '$lib/store'
+  import { goto } from '$app/navigation'
+  import { GameFactory } from '$lib/models/game/GameFactory'
   import Marketplace from './components/Marketplace.svelte'
+
+  import type { PageData } from './$types'
+
+  export let data: PageData
 
   let container: HTMLDivElement
 
-  onMount(() => {
-    //   if (!window.ethereum?.isMetaMask || !(await $wallet.isConnected())) {
-    // 		return goto('/')
-    // 	}
+  onMount(async () => {
+    if (!window.ethereum?.isMetaMask || !(await $wallet.isConnected())) {
+      return goto('/')
+    }
 
-    // 	$wallet.startEventListeners()
-    // 	$wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
+    $wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
+    $wallet.setNFTContract(data.nft.address, data.nft.abi)
 
-    // 	wallet.set($wallet)
+    wallet.set($wallet)
 
-    var game = GameFactory.container(container).players('d159ef156e3c30c243101b416e481167').build()
+    const nfts = await $wallet.getOwnedNFTs()
+
+    var game = GameFactory.container(container).players('f42a198ed17c4bbb4270db0ab79927cc').build()
   })
 </script>
 

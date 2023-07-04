@@ -1,4 +1,5 @@
-import type { BrowserProvider } from 'ethers'
+import { ethers, type BrowserProvider, Contract } from 'ethers'
+import type { Marketplace } from './Marketplace'
 
 const chainOptions = {
   chainId: '0x539',
@@ -15,7 +16,10 @@ const chainOptions = {
 
 export class Wallet {
   accounts: string[] = []
-  provider: BrowserProvider
+  marketplace: Marketplace
+
+  private _provider: BrowserProvider
+  private _nftContract: Contract
 
   get account(): string {
     return this.accounts[0]
@@ -26,21 +30,34 @@ export class Wallet {
     return this.accounts.length > 0
   }
 
-  setAccounts(accounts: string[]): void {
-    this.accounts = accounts
+  setProvider(provider: BrowserProvider): void {
+    this._provider = provider
+    this.startEventListeners()
   }
 
-  setProvider(provider: BrowserProvider): void {
-    this.provider = provider
+  setNFTContract(address: string, abi: string): void {
+    this._nftContract = new ethers.Contract(address, abi, this._provider)
+  }
+
+  async getOwnedNFTs(): Promise<void> {
+    // const totalSupply = await this._nftContract.totalSupply();
+    // console.log(totalSupply)
+    // let tokenURI = await this._nftContract.tokenURI(1)
+    // if (tokenURI.startsWith('ipfs://')) {
+    //   tokenURI = tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
+    // }
+    // const response = await fetch(tokenURI);
+    // const metadata = await response.json();
+    // console.log(metadata)
+  }
+
+  private startEventListeners(): void {
+    window.ethereum.on('accountsChanged', () => window.location.reload())
   }
 
   async promptChainCreation() {
     await window.ethereum
       .request({ method: 'wallet_addEthereumChain', params: [chainOptions] })
       .catch((error: MetaMaskError) => console.log(error))
-  }
-
-  startEventListeners(): void {
-    window.ethereum.on('accountsChanged', () => window.location.reload())
   }
 }

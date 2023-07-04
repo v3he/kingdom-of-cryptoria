@@ -1,6 +1,7 @@
-import { SmartContract } from './ SmartContract'
 import type { NFT } from './NFT'
 import type { JsonRpcSigner } from 'ethers'
+
+import { SmartContract } from './ SmartContract'
 
 export class Marketplace extends SmartContract {
   signer: JsonRpcSigner
@@ -18,9 +19,6 @@ export class Marketplace extends SmartContract {
 
   async deploy(compileOutput: any): Promise<void> {
     await super.deploy(compileOutput, this.signer)
-    console.log('marketplace addr ::', this.address)
-    console.log('nfts addr ::', this.nft.address)
-    console.log('currency addr ::', this.currency.address)
   }
 
   async mint(nfts: NFT[]): Promise<void> {

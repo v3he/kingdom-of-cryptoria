@@ -2,6 +2,7 @@
   import { GameFactory } from '$lib/models/game/GameFactory'
 
   import { onMount } from 'svelte'
+  import Marketplace from './components/Marketplace.svelte'
 
   let container: HTMLDivElement
 
@@ -19,6 +20,7 @@
   })
 </script>
 
+<Marketplace />
 <div id="canvas" bind:this={container} />
 
 <style lang="scss">

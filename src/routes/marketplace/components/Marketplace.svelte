@@ -15,7 +15,11 @@
         <ul>
           <!-- svelte-ignore a11y-invalid-attribute -->
           <li class:active={isMarketplace}>
-            <a href="#" on:click={() => (isMarketplace = true)}>MARKETPLACE</a>
+            <a href="#" on:click={() => (isMarketplace = true)}>COLLECTION</a>
+          </li>
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <li class:active={isMarketplace}>
+            <a href="#" on:click={() => (isMarketplace = true)}>BUY ORDERS</a>
           </li>
           <!-- svelte-ignore a11y-invalid-attribute -->
           <li class:active={!isMarketplace}>

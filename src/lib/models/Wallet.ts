@@ -1,5 +1,6 @@
 import { ethers, type BrowserProvider, Contract, type BigNumberish } from 'ethers'
 import type { Marketplace } from './Marketplace'
+import type { Metadata } from '$lib/types/Metadata'
 
 const chainOptions = {
   chainId: '0x539',
@@ -39,15 +40,12 @@ export class Wallet {
     this._nftContract = new ethers.Contract(address, abi, this._provider)
   }
 
-  async fetchNFTs(): Promise<void> {
+  async fetchNFTs(): Promise<any> {
+    let all: Metadata[] = []
+    let owned: Metadata[] = []
 
-    let all: any = []
-    let owned: any = []
-
-    // let totalSupply = await this._nftContract.totalSupply()
-    // totalSupply = totalSupply.toString() as number
-
-    let totalSupply = 2
+    let totalSupply = await this._nftContract.totalSupply()
+    totalSupply = totalSupply.toString() as number
 
     for (let i = 1; i <= totalSupply; i++) {
       let tokenURI = await this._nftContract.tokenURI(i)
@@ -55,17 +53,19 @@ export class Wallet {
         tokenURI = tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
       }
       const response = await fetch(tokenURI)
-      const metadata = await response.json()
+      const metadata: Metadata = await response.json()
       all.push(metadata)
 
       let address = await this._nftContract.ownerOf(i)
-      if(address.toUpperCase() === this.account.toUpperCase()) {
+      if (address.toUpperCase() === this.account.toUpperCase()) {
         owned.push(metadata)
       }
     }
 
-    console.log(all)
-    console.log(owned)
+    return {
+      owned,
+      collection: all
+    }
   }
 
   private startEventListeners(): void {

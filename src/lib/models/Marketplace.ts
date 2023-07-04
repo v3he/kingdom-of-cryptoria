@@ -21,9 +21,9 @@ export class Marketplace extends SmartContract {
     await super.deploy(compileOutput, this.signer)
   }
 
-  async mint(nfts: NFT[]): Promise<void> {
+  async mint(nfts: NFT[], address: string = this.signer.address): Promise<void> {
     for (const nft of nfts) {
-      ;(await this.nft.contract.safeMint(this.signer.address, nft.metadata)).wait()
+      ;(await this.nft.contract.safeMint(address, nft.metadata)).wait()
     }
   }
 }

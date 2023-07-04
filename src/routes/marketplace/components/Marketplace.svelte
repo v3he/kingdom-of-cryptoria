@@ -1,19 +1,29 @@
 <script lang="ts">
+
+  import close from '$lib/assets/images/close-button.png'
+
+  let isOpen = true
   let isMarketplace = false
+
 </script>
 
-<div class="marketplace__container">
-  <div class="stone-background__container">
-    <div class="parchment-background__container">
-      <ul>
-        <!-- svelte-ignore a11y-invalid-attribute -->
-        <li class:active={isMarketplace}><a href="#" on:click={() => isMarketplace = true}>MARKETPLACE</a></li>
-        <!-- svelte-ignore a11y-invalid-attribute -->
-        <li class:active={!isMarketplace}><a href="#" on:click={() => isMarketplace = false}>MY NFT's</a></li>
-      </ul>
+{#if isOpen}
+  <div class="marketplace__container">
+    <div class="stone-background__container">
+      <button class="close-button" on:click={() => isOpen = false}>
+        <img src="{close}" alt="Close Button">
+      </button>
+      <div class="parchment-background__container">
+        <ul>
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <li class:active={isMarketplace}><a href="#" on:click={() => isMarketplace = true}>MARKETPLACE</a></li>
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <li class:active={!isMarketplace}><a href="#" on:click={() => isMarketplace = false}>MY NFT's</a></li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
+{/if}
 
 <style lang="scss">
 
@@ -36,6 +46,7 @@
 
       width: 923px;
       height: 619px;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -44,6 +55,19 @@
       -o-background-size: contain;
       -moz-background-size: contain;
       -webkit-background-size: contain;
+
+      .close-button {
+        all: unset;
+        width: 60px;
+        height: 60px;
+        top: 40px;
+        right: -50px;
+        position: absolute;
+        cursor: pointer;
+        img {
+          width: 100%;
+        }
+      }
 
       .parchment-background__container {
         width: 885px;

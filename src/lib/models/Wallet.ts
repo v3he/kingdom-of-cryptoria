@@ -1,4 +1,4 @@
-import { ethers, type BrowserProvider, Contract } from 'ethers'
+import { ethers, type BrowserProvider, Contract, type BigNumberish } from 'ethers'
 import type { Marketplace } from './Marketplace'
 
 const chainOptions = {
@@ -39,16 +39,33 @@ export class Wallet {
     this._nftContract = new ethers.Contract(address, abi, this._provider)
   }
 
-  async getOwnedNFTs(): Promise<void> {
-    // const totalSupply = await this._nftContract.totalSupply();
-    // console.log(totalSupply)
-    // let tokenURI = await this._nftContract.tokenURI(1)
-    // if (tokenURI.startsWith('ipfs://')) {
-    //   tokenURI = tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
-    // }
-    // const response = await fetch(tokenURI);
-    // const metadata = await response.json();
-    // console.log(metadata)
+  async fetchNFTs(): Promise<void> {
+
+    let all: any = []
+    let owned: any = []
+
+    // let totalSupply = await this._nftContract.totalSupply()
+    // totalSupply = totalSupply.toString() as number
+
+    let totalSupply = 2
+
+    for (let i = 1; i <= totalSupply; i++) {
+      let tokenURI = await this._nftContract.tokenURI(i)
+      if (tokenURI.startsWith('ipfs://')) {
+        tokenURI = tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
+      }
+      const response = await fetch(tokenURI)
+      const metadata = await response.json()
+      all.push(metadata)
+
+      let address = await this._nftContract.ownerOf(i)
+      if(address.toUpperCase() === this.account.toUpperCase()) {
+        owned.push(metadata)
+      }
+    }
+
+    console.log(all)
+    console.log(owned)
   }
 
   private startEventListeners(): void {

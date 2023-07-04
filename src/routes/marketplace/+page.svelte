@@ -22,7 +22,7 @@
 
     wallet.set($wallet)
 
-    const nfts = await $wallet.getOwnedNFTs()
+    const nfts = await $wallet.fetchNFTs()
 
     var game = GameFactory.container(container).players('f42a198ed17c4bbb4270db0ab79927cc').build()
   })

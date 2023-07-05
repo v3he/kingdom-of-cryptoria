@@ -1,7 +1,9 @@
 <script lang="ts">
   import close from '$lib/assets/images/close-button.png'
+  import Pagination from './Pagination.svelte'
+  import Viewer from './Viewer.svelte'
 
-  let isOpen: boolean = false
+  let isOpen: boolean = true
   let isMarketplace: boolean = false
 </script>
 
@@ -26,6 +28,8 @@
             <a href="#" on:click={() => (isMarketplace = false)}>MY NFT's</a>
           </li>
         </ul>
+        <Viewer />
+        <Pagination />
       </div>
     </div>
   {/if}
@@ -106,6 +110,7 @@
           list-style-type: none;
           padding-left: 0;
           margin: 10px auto;
+          margin-bottom: 30px;
           width: fit-content;
 
           li {

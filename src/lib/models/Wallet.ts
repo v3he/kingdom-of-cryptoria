@@ -58,7 +58,7 @@ export class Wallet {
     for (let i = 1; i <= totalSupply; i++) {
       let tokenURI = await this._nftContract.tokenURI(i)
       if (tokenURI.startsWith('ipfs://')) {
-        tokenURI = tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
+        tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/')
       }
       const response = await fetch(tokenURI)
       const metadata: Metadata = await response.json()

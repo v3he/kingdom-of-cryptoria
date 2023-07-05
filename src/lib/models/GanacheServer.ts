@@ -83,37 +83,32 @@ export class GanacheServer {
 
     await this.marketplace.deploy(compiledOutput)
     await this.marketplace.mint([
-      //this
-      // new NFT('QmcyHKkesUQ3RmLQJQDLst9akCmfroRmcuVr2xemrEUCXz'),
-      // new NFT('QmdLxKcotujCJJd2H6fkgcMKA9oMNmrU6aU4XwWWELqbgH'),
-      // new NFT('QmSmYyn9GjCAbaNVeGiK4BbB5m8zhK4Tb4RbbvYwuckHoS'),
-      // new NFT('QmW1uegeZFeUMDuAkBM1zzvqoudpkLEezVUSbtsVFEdhoF'),
-      // new NFT('QmRw5KRpSkKwdLCWcmxcNCeSZmC5SHWVNY4fCtTRJJdSm1'),
-      // this
-      // new NFT('QmZPWsizZvzavZSC1gZbMW2azJFbFEb1QjhT1r4HX6WdJG'),
-      // new NFT('QmRgnj3knBpPGgbyoRAK7vfehuDhFDU9zCtMnn6kwHgN3E'),
-      // new NFT('QmbqYyszrYQrZQD6pf56x8aFzdBH6mtvmbB8zrExoGnqaj'),
-      // this
-      // new NFT('QmSupyZe68nWZw5S2ZfB4Pq2sJM6X3gT1CcDAmPPLaeTgF'),
-      // new NFT('QmfKA9uEKev1oP9V9XUiPsSGwAqPvNw8wKQXjjBEfkRG7C'),
-      // new NFT('QmQYYesXyGRFN5MxAWKX5ULNBAzFJ8w9ShfcAhx1WGGFdj'),
-      // new NFT('QmYdyzy2m7H6MGx3PQYLM3yqDvGWgBuXrjY5ARTUy7krma'),
-      // new NFT('QmWRPcjtGMsSS9aofAdKmLNfVoCokq4yvbgfUjr2ufDNyM'),
-      //this
-      // new NFT('QmZXE6yGgMXbEcrakqUnre17MNvJ5G8sqwQV7YDkbRxhF2')
-      // new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T')
+      // new NFT('bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy'),
+      // new NFT('bafkreift35nigg32refqiy2whclkn5nlg3ljefjt5ps4mnjlosiukry7ou'),
+      // new NFT('bafkreifwznslzg4kmbz67czftvx6eyvu5uf5aq3fplhgshfnvo6civrz4e'),
+      // new NFT('bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa'),
+      // new NFT('bafkreibngg4tdgmxqaz6akqlz3jezp5wjfmvgrt5rwr6a6ay6stufnhrbq'),
+      // new NFT('bafkreicax3m6lx7fxtajjyyh4qcxqohdzihjqcds2m4wccw4yp752eqffq'),
+      // new NFT('bafkreief6hpicjfiz5sweqqsyiqclhnfkscqba5jboa7xxpmmdcy3mj3fm'),
+      // new NFT('bafkreihah4rpwmhdlwehyxwdirobmdbtmfm3em2nxyvkais77nijfpecmq'),
+      // new NFT('bafkreie33u54p273je7z27de4hicvjecfaivz6dewkxqyqub52eonedpjy'),
+      // new NFT('bafkreifinm6ci4kkzn4kqljies3btkb4uj7ustyktx3tggwaktfenswd3y'),
+      // new NFT('bafkreif273jgam2ie25zs2yovfpqfxvinnvcykfko4cdbvpvp36pmrrane'),
+      // new NFT('bafkreiemroxagpejflzmi6zne25xhkzexogai46czscvbncbc5mczhumf4'),
+      // new NFT('bafkreigsqz3s3cqr63e6jq65iwduzcinjgiveizch3kjzdciz37x6ln3zq'),
+      // new NFT('bafkreictbli4ryxdxnfdejv5pzqxdpogermtel6ixboewsrnzdfhdije44'),
+      // new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma')
     ])
 
     await this.marketplace.mint(
       [
-        new NFT('QmSmYyn9GjCAbaNVeGiK4BbB5m8zhK4Tb4RbbvYwuckHoS'),
-        new NFT('QmW1uegeZFeUMDuAkBM1zzvqoudpkLEezVUSbtsVFEdhoF'),
-        new NFT('QmQYYesXyGRFN5MxAWKX5ULNBAzFJ8w9ShfcAhx1WGGFdj'),
-        new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T'),
-        new NFT('QmRw5KRpSkKwdLCWcmxcNCeSZmC5SHWVNY4fCtTRJJdSm1'),
-        new NFT('QmYdyzy2m7H6MGx3PQYLM3yqDvGWgBuXrjY5ARTUy7krma'),
-        new NFT('QmWRPcjtGMsSS9aofAdKmLNfVoCokq4yvbgfUjr2ufDNyM'),
-        new NFT('QmbqYyszrYQrZQD6pf56x8aFzdBH6mtvmbB8zrExoGnqaj')
+        new NFT('bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa'),
+        new NFT('bafkreifinm6ci4kkzn4kqljies3btkb4uj7ustyktx3tggwaktfenswd3y'),
+        new NFT('bafkreif273jgam2ie25zs2yovfpqfxvinnvcykfko4cdbvpvp36pmrrane'),
+        new NFT('bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy'),
+        new NFT('bafkreigsqz3s3cqr63e6jq65iwduzcinjgiveizch3kjzdciz37x6ln3zq'),
+        new NFT('bafkreief6hpicjfiz5sweqqsyiqclhnfkscqba5jboa7xxpmmdcy3mj3fm'),
+        new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma')
       ],
       '0x22d491bde2303f2f43325b2108d26f1eaba1e32b'
     )

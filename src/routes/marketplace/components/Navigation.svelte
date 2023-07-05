@@ -1,21 +1,26 @@
 <script lang="ts">
-  import { navigation } from '$lib/store'
   import { Navigation } from '$lib/types/Navigation'
+  import { navigation, currentPage } from '$lib/store'
+
+  const onChange = (nav: Navigation) => {
+    navigation.set(nav)
+    currentPage.set(1)
+  }
+
+  const labels = {
+    [Navigation.MY_NFTS]: "MY NFT's",
+    [Navigation.COLLECTION]: 'COLLECTION',
+    [Navigation.BUY_ORDERS]: 'BUY ORDERS'
+  }
 </script>
 
 <ul>
-  <!-- svelte-ignore a11y-invalid-attribute -->
-  <li class:active={$navigation === Navigation.COLLECTION}>
-    <a href="#" on:click={() => navigation.update((n) => Navigation.COLLECTION)}>COLLECTION</a>
-  </li>
-  <!-- svelte-ignore a11y-invalid-attribute -->
-  <li class:active={$navigation === Navigation.BUY_ORDERS}>
-    <a href="#" on:click={() => navigation.update((n) => Navigation.BUY_ORDERS)}>BUY ORDERS</a>
-  </li>
-  <!-- svelte-ignore a11y-invalid-attribute -->
-  <li class:active={$navigation === Navigation.MY_NFTS}>
-    <a href="#" on:click={() => navigation.update((n) => Navigation.MY_NFTS)}>MY NFT's</a>
-  </li>
+  {#each Object.values(Navigation) as nav}
+    <!-- svelte-ignore a11y-invalid-attribute -->
+    <li class:active={$navigation === nav}>
+      <a href="#" on:click={() => onChange(nav)}>{labels[nav]}</a>
+    </li>
+  {/each}
 </ul>
 
 <style lang="scss">

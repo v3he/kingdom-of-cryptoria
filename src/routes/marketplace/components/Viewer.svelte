@@ -3,7 +3,7 @@
   import sword from '$lib/assets/images/sword.png'
   import shield from '$lib/assets/images/shield.png'
 
-  import { wallet } from '$lib/store'
+  import { wallet, currentPage } from '$lib/store'
   import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
 
   const rarity = (attributes: Attribute[]) => {
@@ -12,7 +12,7 @@
 
   let nfts: Metadata[] = []
 
-  $: nfts = $wallet?.nfts?.owned || []
+  $: nfts = $wallet?.nfts?.owned.slice(($currentPage - 1) * 6, $currentPage * 6) || []
 
 </script>
 

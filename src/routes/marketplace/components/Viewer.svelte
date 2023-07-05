@@ -4,15 +4,20 @@
   import shield from '$lib/assets/images/shield.png'
 
   import { wallet } from '$lib/store'
-  import { AttributeType, type Attribute } from '$lib/types/Metadata'
+  import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
 
   const rarity = (attributes: Attribute[]) => {
     return attributes.find((a) => a.trait_type === AttributeType.CATEGORY)?.value
   }
+
+  let nfts: Metadata[] = []
+
+  $: nfts = $wallet?.nfts?.owned || []
+
 </script>
 
 <div class="nft-viewer__container">
-  {#each $wallet?.nfts?.owned as nft}
+  {#each nfts as nft}
     <div class="nft__container">
       <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}">{rarity(nft?.attributes)}</span>
       <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />
@@ -36,7 +41,7 @@
 <style lang="scss">
   .nft-viewer__container {
     width: 100%;
-    height: calc(100% - 100px);
+    height: 370px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

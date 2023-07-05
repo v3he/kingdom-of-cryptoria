@@ -4,17 +4,20 @@
   import DetailView from './DetailView.svelte'
   import Pagination from './Pagination.svelte'
 
-  import { selected } from '$lib/store'
+  import { selected, currentPage, isMarketOpen } from '$lib/store'
 
-  let isOpen: boolean = false
+  const onClose = () => {
+    selected.set(null)
+    currentPage.set(1)
+    isMarketOpen.set(false)
+  }
 
 </script>
 
 <div class="marketplace__container">
-  {#if isOpen}
+  {#if $isMarketOpen}
     <div class="stone-background__container">
-      <!-- <button class="close-button" on:click={() => {isOpen = false; selected.set(null)}}> -->
-      <button class="close-button" on:click={() => isOpen = false}>
+      <button class="close-button" on:click={onClose}>
         <img src="/images/close-button.png" alt="Close Button" />
       </button>
       <div class="parchment-background__container">
@@ -28,7 +31,7 @@
       </div>
     </div>
   {/if}
-  <button class="open-marketplace" on:click={() => (isOpen = true)} />
+  <button class="open-marketplace" on:click={() => (isMarketOpen.set(true))} />
 </div>
 
 <style lang="scss">

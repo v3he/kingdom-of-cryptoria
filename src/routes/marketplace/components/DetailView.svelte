@@ -1,6 +1,11 @@
 <script lang="ts">
 
   import { selected } from "$lib/store"
+  import { AttributeType } from "$lib/types/Metadata"
+
+  const health = $selected?.attributes?.find(a => a.trait_type === AttributeType.HEALTH)?.value
+  const attack = $selected?.attributes?.find(a => a.trait_type === AttributeType.ATTACK)?.value
+  const defense = $selected?.attributes?.find(a => a.trait_type === AttributeType.DEFENSE)?.value
 
 </script>
 
@@ -11,20 +16,24 @@
   <div class="main__container">
     <div class="nft__container">
       <img src="/images/nfts/{$selected?.trace}/idle.gif" alt="NFT Animation" />
+      <div class="stats">
+        <div class="stat__item">
+          <img src="/images/heart.png" alt="Health" /><span>{health}</span>
+        </div>
+        <div class="stat__item">
+          <img src="/images/sword32.png" alt="Attack" /><span>{attack}</span>
+        </div>
+        <div class="stat__item">
+          <img src="/images/shield32.png" alt="Defense" /><span>{defense}</span>
+        </div>
+      </div>
     </div>
     <div class="info__container">
       <div class="info__item">
-        <div class="stats">
-          <div class="stat__item">
-            <img src="/images/heart.png" alt="Health" /><span>100</span>
-          </div>
-          <div class="stat__item">
-            <img src="/images/sword32.png" alt="Attack" /><span>100</span>
-          </div>
-          <div class="stat__item">
-            <img src="/images/shield32.png" alt="Defense" /><span>100</span>
-          </div>
-        </div>
+        <p><strong>Name:</strong>  {$selected?.name}</p>
+      </div>
+      <div class="info__item">
+        <p><strong>Description:</strong>  {$selected?.description}</p>
       </div>
     </div>
   </div>
@@ -45,27 +54,35 @@
       display: grid;
       grid-template-columns: 400px auto;
       .nft__container {
+        position: relative;
         img {
           width: 400px;
+        }
+        .stats {
+          width: 100%;
+          bottom: 5px;
+          position: absolute;
+          display: flex;
+          padding: 0 60px;
+          justify-content: space-between;
+          .stat__item {
+            display: grid;
+            grid-template-columns: 35px auto;
+            align-items: center;
+            img {
+              width: 24px;
+            }
+            span {
+              font-size: 1.4rem;
+            }
+          }
         }
       }
       .info__container {
         .info__item {
-          .stats {
-            display: flex;
-            margin: 0 20px;
-            justify-content: space-between;
-            .stat__item {
-              display: grid;
-              grid-template-columns: 40px auto;
-              align-items: center;
-              img {
-                width: 30px;
-              }
-              span {
-                font-size: 1.6rem;
-              }
-            }
+          font-size: 1.4rem;
+          strong {
+            color: #33281f;
           }
         }  
       }

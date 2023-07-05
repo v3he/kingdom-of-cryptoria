@@ -1,8 +1,4 @@
 <script lang="ts">
-  import heart from '$lib/assets/images/heart.png'
-  import sword from '$lib/assets/images/sword.png'
-  import shield from '$lib/assets/images/shield.png'
-  import exclamationRed from '$lib/assets/images/exclamation-red.png'
 
   import { wallet, currentPage, navigation, selected } from '$lib/store'
   import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
@@ -28,7 +24,7 @@
   {#if !nfts?.length}
     <div class="not-found__container">
       <div class="not-found">
-        <img src={exclamationRed} alt="Not Found" />
+        <img src="/images/exclamation-red.png" alt="Not Found" />
         <h2>{notFoundMessages[Math.floor(Math.random() * notFoundMessages.length)]}</h2>
       </div>
     </div>
@@ -44,17 +40,17 @@
           {#each nft?.attributes as attr}
             {#if attr.trait_type === AttributeType.HEALTH}
               <div class="stat__item">
-                <img src={heart} alt="Health" /><span>{attr.value}</span>
+                <img src="/images/heart.png" alt="Health" /><span>{attr.value}</span>
               </div>
             {/if}
             {#if attr.trait_type === AttributeType.ATTACK}
               <div class="stat__item">
-                <img src={sword} alt="Attack" /><span>{attr.value}</span>
+                <img src="/images/sword.png" alt="Attack" /><span>{attr.value}</span>
               </div>
             {/if}
             {#if attr.trait_type === AttributeType.DEFENSE}
               <div class="stat__item">
-                <img src={shield} alt="Defense" /><span>{attr.value}</span>
+                <img src="/images/shield.png" alt="Defense" /><span>{attr.value}</span>
               </div>
             {/if}
           {/each}

@@ -35,7 +35,7 @@
   #canvas {
     width: 100vw;
     height: 100vh;
-    background: url('$lib/assets/images/background.png') no-repeat center center fixed;
+    background: url('/images/background.png') no-repeat center center fixed;
     background-size: cover;
     -o-background-size: cover;
     -moz-background-size: cover;

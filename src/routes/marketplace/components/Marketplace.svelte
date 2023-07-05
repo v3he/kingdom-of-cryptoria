@@ -3,8 +3,10 @@
   import Pagination from './Pagination.svelte'
   import Viewer from './Viewer.svelte'
 
+  import { navigation } from '$lib/store'
+  import { Navigation } from '$lib/types/Navigation'
+
   let isOpen: boolean = true
-  let isMarketplace: boolean = false
 </script>
 
 <div class="marketplace__container">
@@ -16,16 +18,18 @@
       <div class="parchment-background__container">
         <ul>
           <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={isMarketplace}>
-            <a href="#" on:click={() => (isMarketplace = true)}>COLLECTION</a>
+          <li class:active={$navigation === Navigation.COLLECTION}>
+            <a href="#" on:click={() => navigation.update((n) => Navigation.COLLECTION)}
+              >COLLECTION</a>
           </li>
           <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={isMarketplace}>
-            <a href="#" on:click={() => (isMarketplace = true)}>BUY ORDERS</a>
+          <li class:active={$navigation === Navigation.BUY_ORDERS}>
+            <a href="#" on:click={() => navigation.update((n) => Navigation.BUY_ORDERS)}
+              >BUY ORDERS</a>
           </li>
           <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={!isMarketplace}>
-            <a href="#" on:click={() => (isMarketplace = false)}>MY NFT's</a>
+          <li class:active={$navigation === Navigation.MY_NFTS}>
+            <a href="#" on:click={() => navigation.update((n) => Navigation.MY_NFTS)}>MY NFT's</a>
           </li>
         </ul>
         <Viewer />

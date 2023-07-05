@@ -13,13 +13,13 @@
   let nfts: Metadata[] = []
 
   $: nfts = $wallet?.nfts?.owned.slice(($currentPage - 1) * 6, $currentPage * 6) || []
-
 </script>
 
 <div class="nft-viewer__container">
   {#each nfts as nft}
     <div class="nft__container">
-      <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}">{rarity(nft?.attributes)}</span>
+      <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}"
+        >{rarity(nft?.attributes)}</span>
       <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />
       <div class="stats">
         {#each nft?.attributes as attr}
@@ -30,7 +30,9 @@
             <div class="stat__item"><img src={sword} alt="Attack" /><span>{attr.value}</span></div>
           {/if}
           {#if attr.trait_type === AttributeType.DEFENSE}
-            <div class="stat__item"><img src={shield} alt="Defense" /><span>{attr.value}</span></div>
+            <div class="stat__item">
+              <img src={shield} alt="Defense" /><span>{attr.value}</span>
+            </div>
           {/if}
         {/each}
       </div>

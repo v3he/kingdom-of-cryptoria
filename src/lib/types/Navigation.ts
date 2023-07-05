@@ -1,5 +1,5 @@
 export enum Navigation {
   COLLECTION = 'collection',
-  BUY_ORDERS = 'buyOrders',
+  BUY_ORDERS = 'buy_orders',
   MY_NFTS = 'owned'
 }

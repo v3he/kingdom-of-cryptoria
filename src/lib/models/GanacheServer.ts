@@ -100,15 +100,18 @@ export class GanacheServer {
       // new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T')
     ])
 
-    await this.marketplace.mint([
-      new NFT('QmSmYyn9GjCAbaNVeGiK4BbB5m8zhK4Tb4RbbvYwuckHoS'),
-      new NFT('QmW1uegeZFeUMDuAkBM1zzvqoudpkLEezVUSbtsVFEdhoF'),
-      new NFT('QmQYYesXyGRFN5MxAWKX5ULNBAzFJ8w9ShfcAhx1WGGFdj'),
-      new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T'),
-      new NFT('QmRw5KRpSkKwdLCWcmxcNCeSZmC5SHWVNY4fCtTRJJdSm1'),
-      new NFT('QmYdyzy2m7H6MGx3PQYLM3yqDvGWgBuXrjY5ARTUy7krma'),
-      new NFT('QmWRPcjtGMsSS9aofAdKmLNfVoCokq4yvbgfUjr2ufDNyM'),
-      new NFT('QmbqYyszrYQrZQD6pf56x8aFzdBH6mtvmbB8zrExoGnqaj')
-    ], '0x22d491bde2303f2f43325b2108d26f1eaba1e32b')
+    await this.marketplace.mint(
+      [
+        new NFT('QmSmYyn9GjCAbaNVeGiK4BbB5m8zhK4Tb4RbbvYwuckHoS'),
+        new NFT('QmW1uegeZFeUMDuAkBM1zzvqoudpkLEezVUSbtsVFEdhoF'),
+        new NFT('QmQYYesXyGRFN5MxAWKX5ULNBAzFJ8w9ShfcAhx1WGGFdj'),
+        new NFT('QmdPRuk6jmpu7vthpf6ugVuJ1rdzFRrdLFJUscbn7YAw3T'),
+        new NFT('QmRw5KRpSkKwdLCWcmxcNCeSZmC5SHWVNY4fCtTRJJdSm1'),
+        new NFT('QmYdyzy2m7H6MGx3PQYLM3yqDvGWgBuXrjY5ARTUy7krma'),
+        new NFT('QmWRPcjtGMsSS9aofAdKmLNfVoCokq4yvbgfUjr2ufDNyM'),
+        new NFT('QmbqYyszrYQrZQD6pf56x8aFzdBH6mtvmbB8zrExoGnqaj')
+      ],
+      '0x22d491bde2303f2f43325b2108d26f1eaba1e32b'
+    )
   }
 }

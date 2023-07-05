@@ -34,10 +34,11 @@ export class NPC {
     this.stage = stage
 
     const imageObj = new Image()
+    const startAt: Point = this.createPotentialPoint()
 
     this.sprite = new Konva.Sprite({
-      x: stage.width() / 2 - WIDTH / 2 + 20, // adds padding, its safe to remove
-      y: stage.height() / 2 - (HEIGHT - 30) + 150, // adds padding, its safe to remove
+      x: startAt.x - WIDTH / 2 + 20, // padding to match the foot position
+      y: startAt.y - HEIGHT + 30, // padding to match the foot position
       width: WIDTH,
       height: HEIGHT,
       image: imageObj,
@@ -95,15 +96,18 @@ export class NPC {
     return Math.sqrt(dx * dx + dy * dy)
   }
 
+  // x: adds 150px padding to the left and right
+  // y: adds 45% padding to the top and 150px to the bottom
+  private createPotentialPoint(): Point {
+    return {
+      x: 150 + Math.random() * (this.stage.width() - 300),
+      y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
+    }
+  }
+
   private generateRoute(checkpoints: number): void {
     while (this.points.length < checkpoints) {
-      // x: adds 150px padding to the left and right
-      // y: adds 45% padding to the top and 150px to the bottom
-      const potentialPoint: Point = {
-        x: 150 + Math.random() * (this.stage.width() - 300),
-        y: this.stage.height() * 0.45 + Math.random() * (this.stage.height() * 0.55 - 150)
-      }
-
+      const potentialPoint: Point = this.createPotentialPoint()
       if (this.calculateDistance(potentialPoint, this.getFootPosition()) > GENERATION_RADIUS) {
         this.points.push(potentialPoint)
       }

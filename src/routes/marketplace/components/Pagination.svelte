@@ -32,11 +32,6 @@
 </div>
 
 <style lang="scss">
-  @font-face {
-    font-family: 'SangSangRockRegular';
-    src: url('$lib/assets/fonts/SangSangRockRegular.ttf') format('truetype');
-  }
-
   .pagination {
     text-align: center;
     font-size: 1.5rem;

@@ -22,8 +22,8 @@
 
     wallet.set($wallet)
 
-    const game = GameFactory.container(container)
-      // .players(nfts.owned.map((n) => n.trace))
+    GameFactory.container(container)
+      .players($wallet?.nfts?.owned.map((n) => n.trace))
       .build()
   })
 </script>

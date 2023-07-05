@@ -1,37 +1,19 @@
 <script lang="ts">
-  import close from '$lib/assets/images/close-button.png'
-  import Pagination from './Pagination.svelte'
   import Viewer from './Viewer.svelte'
+  import Navigation from './Navigation.svelte'
+  import Pagination from './Pagination.svelte'
 
-  import { navigation } from '$lib/store'
-  import { Navigation } from '$lib/types/Navigation'
-
-  let isOpen: boolean = true
+  let isOpen: boolean = false
 </script>
 
 <div class="marketplace__container">
   {#if isOpen}
     <div class="stone-background__container">
       <button class="close-button" on:click={() => (isOpen = false)}>
-        <img src={close} alt="Close Button" />
+        <img src="/images/close-button.png" alt="Close Button" />
       </button>
       <div class="parchment-background__container">
-        <ul>
-          <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={$navigation === Navigation.COLLECTION}>
-            <a href="#" on:click={() => navigation.update((n) => Navigation.COLLECTION)}
-              >COLLECTION</a>
-          </li>
-          <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={$navigation === Navigation.BUY_ORDERS}>
-            <a href="#" on:click={() => navigation.update((n) => Navigation.BUY_ORDERS)}
-              >BUY ORDERS</a>
-          </li>
-          <!-- svelte-ignore a11y-invalid-attribute -->
-          <li class:active={$navigation === Navigation.MY_NFTS}>
-            <a href="#" on:click={() => navigation.update((n) => Navigation.MY_NFTS)}>MY NFT's</a>
-          </li>
-        </ul>
+        <Navigation />
         <Viewer />
         <Pagination />
       </div>
@@ -41,11 +23,6 @@
 </div>
 
 <style lang="scss">
-  @font-face {
-    font-family: 'SangSangRockRegular';
-    src: url('$lib/assets/fonts/SangSangRockRegular.ttf') format('truetype');
-  }
-
   .marketplace__container {
     z-index: 2;
     width: 100%;
@@ -67,9 +44,9 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-color: transparent;
-      background-image: url('$lib/assets/images/open-market.png');
+      background-image: url('/images/open-market.png');
       &:hover {
-        background-image: url('$lib/assets/images/open-market-pressed.png');
+        background-image: url('/images/open-market-pressed.png');
       }
     }
 
@@ -80,7 +57,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: url('$lib/assets/images/board-stone.png') no-repeat center/contain;
+      background: url('/images/board-stone.png') no-repeat center/contain;
       background-size: contain;
       -o-background-size: contain;
       -moz-background-size: contain;
@@ -104,49 +81,11 @@
         height: 570px;
         padding: 50px;
         font-family: 'SangSangRockRegular', sans-serif;
-        background: url('$lib/assets/images/board-parchment.png') no-repeat center/contain;
+        background: url('/images/board-parchment.png') no-repeat center/contain;
         background-size: contain;
         -o-background-size: contain;
         -moz-background-size: contain;
         -webkit-background-size: contain;
-
-        ul {
-          list-style-type: none;
-          padding-left: 0;
-          margin: 10px auto;
-          margin-bottom: 30px;
-          width: fit-content;
-
-          li {
-            display: inline;
-            position: relative;
-
-            &:not(:last-child) {
-              margin-right: 100px;
-            }
-
-            &::after {
-              content: '';
-              position: absolute;
-              left: 0;
-              bottom: -5px;
-              width: 100%;
-              height: 3px;
-              background-color: #000;
-              visibility: hidden;
-            }
-
-            &.active::after {
-              visibility: visible;
-            }
-
-            a {
-              color: #000;
-              font-size: 1.7rem;
-              text-decoration: none;
-            }
-          }
-        }
       }
     }
   }

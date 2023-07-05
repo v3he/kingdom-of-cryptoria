@@ -2,64 +2,35 @@
   import heart from '$lib/assets/images/heart.png'
   import sword from '$lib/assets/images/sword.png'
   import shield from '$lib/assets/images/shield.png'
-  import gif from '$lib/assets/nfts/dd71c131fa61239b580977d949a34717/idle.gif'
+
+  import { wallet } from '$lib/store'
+  import { AttributeType, type Attribute } from '$lib/types/Metadata'
+
+  const rarity = (attributes: Attribute[]) => {
+    return attributes.find((a) => a.trait_type === AttributeType.CATEGORY)?.value
+  }
 </script>
 
 <div class="nft-viewer__container">
-  <div class="nft__container">
-    <span class="rarity mystic">Mystic</span>
-    <img src={gif} alt="NFT Animation" />
-    <div class="stats">
-      <div class="stat__item"><img src={heart} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={sword} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={shield} alt="Health" /><span>100</span></div>
+  {#each $wallet?.nfts?.owned as nft}
+    <div class="nft__container">
+      <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}">{rarity(nft?.attributes)}</span>
+      <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />
+      <div class="stats">
+        {#each nft?.attributes as attr}
+          {#if attr.trait_type === AttributeType.HEALTH}
+            <div class="stat__item"><img src={heart} alt="Health" /><span>{attr.value}</span></div>
+          {/if}
+          {#if attr.trait_type === AttributeType.ATTACK}
+            <div class="stat__item"><img src={sword} alt="Attack" /><span>{attr.value}</span></div>
+          {/if}
+          {#if attr.trait_type === AttributeType.DEFENSE}
+            <div class="stat__item"><img src={shield} alt="Defense" /><span>{attr.value}</span></div>
+          {/if}
+        {/each}
+      </div>
     </div>
-  </div>
-  <div class="nft__container">
-    <span class="rarity mystic">Mystic</span>
-    <img src={gif} alt="NFT Animation" />
-    <div class="stats">
-      <div class="stat__item"><img src={heart} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={sword} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={shield} alt="Health" /><span>100</span></div>
-    </div>
-  </div>
-  <div class="nft__container">
-    <span class="rarity mystic">Mystic</span>
-    <img src={gif} alt="NFT Animation" />
-    <div class="stats">
-      <div class="stat__item"><img src={heart} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={sword} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={shield} alt="Health" /><span>100</span></div>
-    </div>
-  </div>
-  <div class="nft__container">
-    <span class="rarity mystic">Mystic</span>
-    <img src={gif} alt="NFT Animation" />
-    <div class="stats">
-      <div class="stat__item"><img src={heart} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={sword} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={shield} alt="Health" /><span>100</span></div>
-    </div>
-  </div>
-  <div class="nft__container">
-    <span class="rarity mystic">Mystic</span>
-    <img src={gif} alt="NFT Animation" />
-    <div class="stats">
-      <div class="stat__item"><img src={heart} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={sword} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={shield} alt="Health" /><span>100</span></div>
-    </div>
-  </div>
-  <div class="nft__container">
-    <span class="rarity mystic">Mystic</span>
-    <img src={gif} alt="NFT Animation" />
-    <div class="stats">
-      <div class="stat__item"><img src={heart} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={sword} alt="Health" /><span>100</span></div>
-      <div class="stat__item"><img src={shield} alt="Health" /><span>100</span></div>
-    </div>
-  </div>
+  {/each}
 </div>
 
 <style lang="scss">

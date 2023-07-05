@@ -53,7 +53,7 @@ export class NPC {
       this.startRoute()
     }
 
-    imageObj.src = `/images/players/${trace}/spritesheet.png`
+    imageObj.src = `/images/nfts/${trace}/spritesheet.png`
 
     this.generateRoute(CHECKPOINT_NUMBER)
   }

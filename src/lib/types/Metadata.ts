@@ -1,6 +1,13 @@
+export enum AttributeType {
+  CATEGORY = 'category',
+  HEALTH = 'health',
+  ATTACK = 'attack',
+  DEFENSE = 'defense'
+}
+
 export interface Attribute {
-  trait_type: string
-  value: number
+  trait_type: AttributeType
+  value: number | string
 }
 
 export interface Metadata {

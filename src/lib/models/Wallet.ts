@@ -15,9 +15,16 @@ const chainOptions = {
   blockExplorerUrls: ['https://etherscan.io']
 }
 
+interface NFTCollection {
+  owned: Metadata[]
+  collection: Metadata[]
+}
+
 export class Wallet {
   accounts: string[] = []
   marketplace: Marketplace
+
+  nfts: NFTCollection
 
   private _provider: BrowserProvider
   private _nftContract: Contract
@@ -36,11 +43,12 @@ export class Wallet {
     this.startEventListeners()
   }
 
-  setNFTContract(address: string, abi: string): void {
+  async setNFTContract(address: string, abi: string): Promise<void> {
     this._nftContract = new ethers.Contract(address, abi, this._provider)
+    await this.fetchNFTs()
   }
 
-  async fetchNFTs(): Promise<any> {
+  private async fetchNFTs(): Promise<void> {
     let all: Metadata[] = []
     let owned: Metadata[] = []
 
@@ -62,7 +70,7 @@ export class Wallet {
       }
     }
 
-    return {
+    this.nfts = {
       owned,
       collection: all
     }

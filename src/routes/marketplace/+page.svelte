@@ -18,11 +18,10 @@
     }
 
     $wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
-    $wallet.setNFTContract(data.nft.address, data.nft.abi)
+    await $wallet.setNFTContract(data.nft.address, data.nft.abi)
 
     wallet.set($wallet)
 
-    // const nfts = await $wallet.fetchNFTs()
     const game = GameFactory.container(container)
       // .players(nfts.owned.map((n) => n.trace))
       .build()

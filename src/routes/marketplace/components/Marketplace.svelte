@@ -1,21 +1,30 @@
 <script lang="ts">
   import Viewer from './Viewer.svelte'
   import Navigation from './Navigation.svelte'
+  import DetailView from './DetailView.svelte'
   import Pagination from './Pagination.svelte'
 
+  import { selected } from '$lib/store'
+
   let isOpen: boolean = false
+
 </script>
 
 <div class="marketplace__container">
   {#if isOpen}
     <div class="stone-background__container">
-      <button class="close-button" on:click={() => (isOpen = false)}>
+      <!-- <button class="close-button" on:click={() => {isOpen = false; selected.set(null)}}> -->
+      <button class="close-button" on:click={() => isOpen = false}>
         <img src="/images/close-button.png" alt="Close Button" />
       </button>
       <div class="parchment-background__container">
-        <Navigation />
-        <Viewer />
-        <Pagination />
+        {#if $selected}
+          <DetailView />
+        {:else}
+          <Navigation />
+          <Viewer />
+          <Pagination />
+        {/if}
       </div>
     </div>
   {/if}

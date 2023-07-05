@@ -3,6 +3,11 @@
   src: url('/fonts/SangSangRockRegular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'BMYEONSUNG';
+  src: url('/fonts/BMYEONSUNG.ttf') format('truetype');
+}
+
 * {
   box-sizing: border-box;
 }

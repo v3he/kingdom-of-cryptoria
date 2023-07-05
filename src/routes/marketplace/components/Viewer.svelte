@@ -4,7 +4,7 @@
   import shield from '$lib/assets/images/shield.png'
   import exclamationRed from '$lib/assets/images/exclamation-red.png'
 
-  import { wallet, currentPage, navigation } from '$lib/store'
+  import { wallet, currentPage, navigation, selected } from '$lib/store'
   import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
 
   const rarity = (attributes: Attribute[]) => {
@@ -34,7 +34,9 @@
     </div>
   {:else}
     {#each nfts as nft}
-      <div class="nft__container">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div class="nft__container" on:click={() => selected.set(nft)}>
         <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}"
           >{rarity(nft?.attributes)}</span>
         <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />

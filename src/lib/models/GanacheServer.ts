@@ -102,13 +102,13 @@ export class GanacheServer {
 
     await this.marketplace.mint(
       [
+        new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma'),
         new NFT('bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa'),
         new NFT('bafkreifinm6ci4kkzn4kqljies3btkb4uj7ustyktx3tggwaktfenswd3y'),
         new NFT('bafkreif273jgam2ie25zs2yovfpqfxvinnvcykfko4cdbvpvp36pmrrane'),
         new NFT('bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy'),
         new NFT('bafkreigsqz3s3cqr63e6jq65iwduzcinjgiveizch3kjzdciz37x6ln3zq'),
-        new NFT('bafkreief6hpicjfiz5sweqqsyiqclhnfkscqba5jboa7xxpmmdcy3mj3fm'),
-        new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma')
+        new NFT('bafkreief6hpicjfiz5sweqqsyiqclhnfkscqba5jboa7xxpmmdcy3mj3fm')
       ],
       '0x22d491bde2303f2f43325b2108d26f1eaba1e32b'
     )

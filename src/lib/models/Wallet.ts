@@ -65,6 +65,7 @@ export class Wallet {
       all.push(metadata)
 
       let address = await this._nftContract.ownerOf(i)
+      metadata.owner = address
       if (address.toUpperCase() === this.account.toUpperCase()) {
         owned.push(metadata)
       }

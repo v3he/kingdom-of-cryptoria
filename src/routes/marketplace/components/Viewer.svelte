@@ -2,42 +2,64 @@
   import heart from '$lib/assets/images/heart.png'
   import sword from '$lib/assets/images/sword.png'
   import shield from '$lib/assets/images/shield.png'
+  import exclamationRed from '$lib/assets/images/exclamation-red.png'
 
-  import { wallet, currentPage } from '$lib/store'
+  import { wallet, currentPage, navigation } from '$lib/store'
   import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
 
   const rarity = (attributes: Attribute[]) => {
     return attributes.find((a) => a.trait_type === AttributeType.CATEGORY)?.value
   }
 
+  const notFoundMessages: string[] = [
+    'Houston, we have a problem. The NFTs have left the building!',
+    "We've hit an NFT dry spell here. Time to summon the rain dance!",
+    "The NFTs appear to be playing hide and seek, and they're really good at it!",
+    "It seems like we've embarked on a ghost hunt. No NFTs detected in this vicinity!",
+    "Whoa! It's tumbleweed central here. No NFTs found in this part of the blockchain desert!"
+  ]
+
   let nfts: Metadata[] = []
 
-  $: nfts = $wallet?.nfts?.owned.slice(($currentPage - 1) * 6, $currentPage * 6) || []
+  $: nfts = $wallet?.nfts?.[$navigation]?.slice(($currentPage - 1) * 6, $currentPage * 6) || []
 </script>
 
 <div class="nft-viewer__container">
-  {#each nfts as nft}
-    <div class="nft__container">
-      <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}"
-        >{rarity(nft?.attributes)}</span>
-      <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />
-      <div class="stats">
-        {#each nft?.attributes as attr}
-          {#if attr.trait_type === AttributeType.HEALTH}
-            <div class="stat__item"><img src={heart} alt="Health" /><span>{attr.value}</span></div>
-          {/if}
-          {#if attr.trait_type === AttributeType.ATTACK}
-            <div class="stat__item"><img src={sword} alt="Attack" /><span>{attr.value}</span></div>
-          {/if}
-          {#if attr.trait_type === AttributeType.DEFENSE}
-            <div class="stat__item">
-              <img src={shield} alt="Defense" /><span>{attr.value}</span>
-            </div>
-          {/if}
-        {/each}
+  {#if !nfts?.length}
+    <div class="not-found__container">
+      <div class="not-found">
+        <img src={exclamationRed} alt="Not Found" />
+        <h2>{notFoundMessages[Math.floor(Math.random() * notFoundMessages.length)]}</h2>
       </div>
     </div>
-  {/each}
+  {:else}
+    {#each nfts as nft}
+      <div class="nft__container">
+        <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}"
+          >{rarity(nft?.attributes)}</span>
+        <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />
+        <div class="stats">
+          {#each nft?.attributes as attr}
+            {#if attr.trait_type === AttributeType.HEALTH}
+              <div class="stat__item">
+                <img src={heart} alt="Health" /><span>{attr.value}</span>
+              </div>
+            {/if}
+            {#if attr.trait_type === AttributeType.ATTACK}
+              <div class="stat__item">
+                <img src={sword} alt="Attack" /><span>{attr.value}</span>
+              </div>
+            {/if}
+            {#if attr.trait_type === AttributeType.DEFENSE}
+              <div class="stat__item">
+                <img src={shield} alt="Defense" /><span>{attr.value}</span>
+              </div>
+            {/if}
+          {/each}
+        </div>
+      </div>
+    {/each}
+  {/if}
 </div>
 
 <style lang="scss">
@@ -49,8 +71,25 @@
     justify-content: center;
     align-content: flex-start;
 
+    .not-found__container {
+      height: 100%;
+      width: 100%;
+      display: grid;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+
+      .not-found {
+        width: 500px;
+        img {
+          width: 60px;
+        }
+      }
+    }
+
     .nft__container {
       margin: 15px;
+      width: 220px;
       height: 150px;
       border: 1px solid#5e4d3a;
       border-radius: 3px;

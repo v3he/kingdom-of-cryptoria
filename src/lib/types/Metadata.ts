@@ -11,6 +11,7 @@ export interface Attribute {
 }
 
 export interface Metadata {
+  owner: string
   name: string
   description: string
   image: string

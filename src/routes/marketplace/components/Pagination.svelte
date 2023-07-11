@@ -1,11 +1,17 @@
 <script lang="ts">
   import { Direction } from '$lib/types/Direction'
   import { wallet, currentPage, navigation } from '$lib/store'
+  import { Navigation } from '$lib/types/Navigation'
 
   let pages: number[] = []
 
   $: pages = Array.from(
-    { length: Math.ceil($wallet?.nfts?.[$navigation]?.length / 6) },
+    {
+      length: Math.ceil(
+        $wallet?.nfts?.filter((nft) => ($navigation === Navigation.MY_NFTS ? nft.owned : true))
+          .length / 6
+      )
+    },
     (_, index) => index + 1
   )
 

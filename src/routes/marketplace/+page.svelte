@@ -23,7 +23,7 @@
     wallet.set($wallet)
 
     GameFactory.container(container)
-      .players($wallet?.nfts?.owned.map((n) => n.trace))
+      .players($wallet?.nfts?.filter((n) => n.owned).map((n) => n.trace))
       .build()
   })
 </script>

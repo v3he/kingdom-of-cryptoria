@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Navigation } from '$lib/types/Navigation'
   import { wallet, currentPage, navigation, selected } from '$lib/store'
   import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
 
@@ -16,7 +17,10 @@
 
   let nfts: Metadata[] = []
 
-  $: nfts = $wallet?.nfts?.[$navigation]?.slice(($currentPage - 1) * 6, $currentPage * 6) || []
+  $: nfts =
+    $wallet?.nfts
+      ?.filter((nft) => ($navigation === Navigation.MY_NFTS ? nft.owned : true))
+      ?.slice(($currentPage - 1) * 6, $currentPage * 6) || []
 </script>
 
 <div class="nft-viewer__container">

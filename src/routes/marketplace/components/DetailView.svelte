@@ -22,10 +22,9 @@
     return [
       { class: 'buy-nft', click: onBuy },
       { class: 'sell-nft', click: onSell },
-      { class: 'cancel-sale-nft', click: onCancelSale },
+      { class: 'cancel-sale-nft', click: onCancelSale }
     ]
   }
-
 </script>
 
 <div class="nft-detail-view__container">
@@ -48,7 +47,7 @@
       </div>
     </div>
     <div class="info__container">
-      <div class="info__item">
+      <div class="info__item rm-mg-top">
         <p><strong>Name:</strong> {$selected?.name}</p>
       </div>
       <div class="info__item">
@@ -56,7 +55,7 @@
       </div>
       <div class="info__item actions">
         {#each buttons() as button}
-          <button class="{button.class}" on:click={button.click}></button>
+          <button class={button.class} on:click={button.click} />
         {/each}
       </div>
     </div>
@@ -108,7 +107,11 @@
           strong {
             color: #33281f;
           }
-
+          &.rm-mg-top {
+            p {
+              margin-top: 0;
+            }
+          }
           &.actions {
             button {
               all: unset;
@@ -138,7 +141,6 @@
               }
             }
           }
-
         }
       }
     }

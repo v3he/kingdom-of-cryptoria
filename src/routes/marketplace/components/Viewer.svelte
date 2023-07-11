@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { wallet, currentPage, navigation, selected } from '$lib/store'
   import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
 

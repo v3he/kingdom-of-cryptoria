@@ -1,12 +1,10 @@
 <script lang="ts">
+  import { selected } from '$lib/store'
+  import { AttributeType } from '$lib/types/Metadata'
 
-  import { selected } from "$lib/store"
-  import { AttributeType } from "$lib/types/Metadata"
-
-  const health = $selected?.attributes?.find(a => a.trait_type === AttributeType.HEALTH)?.value
-  const attack = $selected?.attributes?.find(a => a.trait_type === AttributeType.ATTACK)?.value
-  const defense = $selected?.attributes?.find(a => a.trait_type === AttributeType.DEFENSE)?.value
-
+  const health = $selected?.attributes?.find((a) => a.trait_type === AttributeType.HEALTH)?.value
+  const attack = $selected?.attributes?.find((a) => a.trait_type === AttributeType.ATTACK)?.value
+  const defense = $selected?.attributes?.find((a) => a.trait_type === AttributeType.DEFENSE)?.value
 </script>
 
 <div class="nft-detail-view__container">
@@ -30,10 +28,10 @@
     </div>
     <div class="info__container">
       <div class="info__item">
-        <p><strong>Name:</strong>  {$selected?.name}</p>
+        <p><strong>Name:</strong> {$selected?.name}</p>
       </div>
       <div class="info__item">
-        <p><strong>Description:</strong>  {$selected?.description}</p>
+        <p><strong>Description:</strong> {$selected?.description}</p>
       </div>
     </div>
   </div>
@@ -84,7 +82,7 @@
           strong {
             color: #33281f;
           }
-        }  
+        }
       }
     }
   }

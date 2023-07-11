@@ -12,7 +12,6 @@
     [Navigation.COLLECTION]: 'COLLECTION',
     [Navigation.BUY_ORDERS]: 'BUY ORDERS'
   }
-
 </script>
 
 <ul>

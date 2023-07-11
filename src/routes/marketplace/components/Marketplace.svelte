@@ -11,7 +11,6 @@
     currentPage.set(1)
     isMarketOpen.set(false)
   }
-
 </script>
 
 <div class="marketplace__container">
@@ -31,7 +30,7 @@
       </div>
     </div>
   {/if}
-  <button class="open-marketplace" on:click={() => (isMarketOpen.set(true))} />
+  <button class="open-marketplace" on:click={() => isMarketOpen.set(true)} />
 </div>
 
 <style lang="scss">

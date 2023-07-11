@@ -5,6 +5,27 @@
   const health = $selected?.attributes?.find((a) => a.trait_type === AttributeType.HEALTH)?.value
   const attack = $selected?.attributes?.find((a) => a.trait_type === AttributeType.ATTACK)?.value
   const defense = $selected?.attributes?.find((a) => a.trait_type === AttributeType.DEFENSE)?.value
+
+  const onBuy = () => {
+    console.log('buy nft')
+  }
+
+  const onSell = () => {
+    console.log('sell nft')
+  }
+
+  const onCancelSale = () => {
+    console.log('cancel sale')
+  }
+
+  const buttons = () => {
+    return [
+      { class: 'buy-nft', click: onBuy },
+      { class: 'sell-nft', click: onSell },
+      { class: 'cancel-sale-nft', click: onCancelSale },
+    ]
+  }
+
 </script>
 
 <div class="nft-detail-view__container">
@@ -32,6 +53,11 @@
       </div>
       <div class="info__item">
         <p><strong>Description:</strong> {$selected?.description}</p>
+      </div>
+      <div class="info__item actions">
+        {#each buttons() as button}
+          <button class="{button.class}" on:click={button.click}></button>
+        {/each}
       </div>
     </div>
   </div>
@@ -82,6 +108,37 @@
           strong {
             color: #33281f;
           }
+
+          &.actions {
+            button {
+              all: unset;
+              width: 190px;
+              height: 60px;
+              cursor: pointer;
+              background-size: contain;
+              background-repeat: no-repeat;
+              background-color: transparent;
+            }
+            .buy-nft {
+              background-image: url('/assets/buttons/buy-button.png');
+              &:hover {
+                background-image: url('/assets/buttons/buy-button-pressed.png');
+              }
+            }
+            .sell-nft {
+              background-image: url('/assets/buttons/sell-button.png');
+              &:hover {
+                background-image: url('/assets/buttons/sell-button-pressed.png');
+              }
+            }
+            .cancel-sale-nft {
+              background-image: url('/assets/buttons/cancel-sale-button.png');
+              &:hover {
+                background-image: url('/assets/buttons/cancel-sale-button-pressed.png');
+              }
+            }
+          }
+
         }
       }
     }

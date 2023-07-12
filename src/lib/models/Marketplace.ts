@@ -1,8 +1,9 @@
 import type { NFT } from './NFT'
-import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
 
-import { createNFT } from '$lib/server/db'
+import { createNFT, createSellOrder } from '$lib/server/db'
 import { SmartContract } from './ SmartContract'
+import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
+import { MarketplaceEvent } from '$lib/types/MarketplaceEvents'
 
 export class Marketplace extends SmartContract {
   signer: JsonRpcSigner
@@ -20,12 +21,12 @@ export class Marketplace extends SmartContract {
 
   async deploy(compileOutput: any): Promise<void> {
     await super.deploy(compileOutput, this.signer)
+    await (await this.nft.contract.setApprovalForAll(this.address, true)).wait()
     this.startEventListener()
   }
 
   async mint(nfts: NFT[], address: string = this.signer.address): Promise<void> {
     for (const nft of nfts) {
-
       const receipt: ContractTransactionReceipt = await (
         await this.nft.contract.safeMint(address, nft.metadata)
       ).wait()
@@ -35,18 +36,20 @@ export class Marketplace extends SmartContract {
         .map((log) => this.nft.contract.interface.parseLog(log))
         .find((event) => event && event.name === 'Transfer')!
 
-      createNFT(log?.args[1], log.args[2].toString() as number)
+      const owner: string = log?.args[1]
+      const nftID: number = log?.args[2].toString() as number
 
+      createNFT(owner, nftID, nft.metadata)
+
+      if (address == this.signer.address) {
+        await (await this.contract.postSellOrder(nftID, Math.floor(Math.random() * 15) + 1)).wait()
+      }
     }
   }
 
   private startEventListener(): void {
-    this.contract.on('SellOrderListed', (owner, nftId, erc20Amount, event) => {
-      console.log(`Sell order listed: 
-        Owner: ${owner}
-        NFT ID: ${nftId.toString()}
-        ERC20 Amount: ${erc20Amount.toString()}`)
-      console.log(`Event block number: ${event.blockNumber}`)
+    this.contract.on(MarketplaceEvent.SELL_ORDER_LISTED, (owner, id, amount) => {
+      createSellOrder({ owner, nftID: id, amount })
     })
   }
 }

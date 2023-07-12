@@ -8,10 +8,9 @@
   }
 
   const labels = {
+    [Navigation.ON_SALE]: 'ON SALE',
     [Navigation.MY_NFTS]: "MY NFT's",
-    [Navigation.COLLECTION]: 'COLLECTION',
-    [Navigation.BUY_ORDERS]: 'BUY ORDERS',
-    [Navigation.SELL_ORDERS]: 'SELL ORDERS'
+    [Navigation.COLLECTION]: 'COLLECTION'
   }
 </script>
 
@@ -37,7 +36,7 @@
       position: relative;
 
       &:not(:last-child) {
-        margin-right: 50px;
+        margin-right: 90px;
       }
 
       &::after {

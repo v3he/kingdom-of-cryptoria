@@ -2,6 +2,15 @@ import Database from 'better-sqlite3'
 
 const db = new Database('./ganache/marketplace.db', { verbose: console.log })
 
+db.exec('DELETE FROM nfts').exec('DELETE FROM sell_orders').exec('DELETE FROM buy_orders')
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS nfts (
+    owner TEXT,
+    nftId INTEGER
+  )
+`)
+
 db.exec(`
   CREATE TABLE IF NOT EXISTS sell_orders (
     owner TEXT,
@@ -19,4 +28,6 @@ db.exec(`
   )
 `)
 
-export default db
+export function createNFT(owner: string, nftId: number) {
+  db.prepare('INSERT INTO nfts (owner, nftId) VALUES (?, ?)').run(owner, nftId)
+}

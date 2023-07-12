@@ -1,7 +1,7 @@
 import type { NFT } from './NFT'
-import type { JsonRpcSigner } from 'ethers'
+import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
 
-import db from '$lib/server/db'
+import { createNFT } from '$lib/server/db'
 import { SmartContract } from './ SmartContract'
 
 export class Marketplace extends SmartContract {
@@ -25,7 +25,18 @@ export class Marketplace extends SmartContract {
 
   async mint(nfts: NFT[], address: string = this.signer.address): Promise<void> {
     for (const nft of nfts) {
-      ;(await this.nft.contract.safeMint(address, nft.metadata)).wait()
+
+      const receipt: ContractTransactionReceipt = await (
+        await this.nft.contract.safeMint(address, nft.metadata)
+      ).wait()
+
+      const log: LogDescription = receipt.logs
+        .map((log) => ({ topics: [...log.topics], data: log.data }))
+        .map((log) => this.nft.contract.interface.parseLog(log))
+        .find((event) => event && event.name === 'Transfer')!
+
+      createNFT(log?.args[1], log.args[2].toString() as number)
+
     }
   }
 

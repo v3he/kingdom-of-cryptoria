@@ -1,13 +1,12 @@
-import Database from '$lib/server/db'
+import DatabaseManager from '$lib/server/db'
 import type { PageServerLoad } from './$types'
 
 export const ssr = false
 
-export const load = (({ locals }) => {
+export const load = (async ({ locals }) => {
   return {
     nft: {
-      collection: Database.getAllNFTs(),
-      on_sale: Database.getNFTsOnSale()
+      collection: await locals.server.marketplace.fetchNFTMetadata(DatabaseManager.getAllNFTs())
       // abi: locals.server.marketplace.nft.abi,
       // address: locals.server.marketplace.nft.address
     }

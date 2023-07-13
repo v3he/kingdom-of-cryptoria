@@ -1,9 +1,9 @@
-import type { NFT } from './NFT'
-
 import { SmartContract } from './ SmartContract'
 import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
 import { MarketplaceEvent } from '$lib/types/MarketplaceEvents'
 import Database from '$lib/server/db'
+import type { NFT } from '$lib/server/db/types/NFT'
+import type { Metadata } from '$lib/types/Metadata'
 
 export class Marketplace extends SmartContract {
   signer: JsonRpcSigner
@@ -25,10 +25,10 @@ export class Marketplace extends SmartContract {
     this.startEventListener()
   }
 
-  async mint(nfts: NFT[], address: string = this.signer.address): Promise<void> {
+  async mint(nfts: string[], address: string = this.signer.address): Promise<void> {
     for (const nft of nfts) {
       const receipt: ContractTransactionReceipt = await (
-        await this.nft.contract.safeMint(address, nft.metadata)
+        await this.nft.contract.safeMint(address, nft)
       ).wait()
 
       const log: LogDescription = receipt.logs
@@ -39,12 +39,22 @@ export class Marketplace extends SmartContract {
       const owner: string = log?.args[1]
       const nftID: number = log?.args[2].toString() as number
 
-      Database.createNFT(owner, nftID, nft.metadata)
+      Database.createNFT(owner, nftID, nft)
 
       if (address == this.signer.address) {
         await (await this.contract.postSellOrder(nftID, Math.floor(Math.random() * 15) + 1)).wait()
       }
     }
+  }
+
+  async fetchNFTMetadata(nfts: NFT[]): Promise<NFT[]> {
+    return Promise.all(
+      nfts.map(async (nft) => {
+        const response = await fetch(`https://ipfs.io/ipfs/${nft.ipfs}`)
+        const metadata: Metadata = await response.json()
+        return { ...nft, metadata }
+      })
+    )
   }
 
   private startEventListener(): void {

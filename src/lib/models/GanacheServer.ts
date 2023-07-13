@@ -3,7 +3,6 @@ import solc from 'solc'
 import path from 'path'
 import ganache from 'ganache'
 
-import { NFT } from './NFT'
 import { Account } from './Account'
 import { Marketplace } from './Marketplace'
 import { JsonRpcProvider, JsonRpcSigner, ethers } from 'ethers'
@@ -84,8 +83,8 @@ export class GanacheServer {
     await this.marketplace.deploy(compiledOutput)
     await this.marketplace.mint([
       // new NFT('bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy'),
-      new NFT('bafkreift35nigg32refqiy2whclkn5nlg3ljefjt5ps4mnjlosiukry7ou'),
-      new NFT('bafkreifwznslzg4kmbz67czftvx6eyvu5uf5aq3fplhgshfnvo6civrz4e')
+      'bafkreift35nigg32refqiy2whclkn5nlg3ljefjt5ps4mnjlosiukry7ou',
+      'bafkreifwznslzg4kmbz67czftvx6eyvu5uf5aq3fplhgshfnvo6civrz4e'
       // new NFT('bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa'),
       // new NFT('bafkreibngg4tdgmxqaz6akqlz3jezp5wjfmvgrt5rwr6a6ay6stufnhrbq'),
       // new NFT('bafkreicax3m6lx7fxtajjyyh4qcxqohdzihjqcds2m4wccw4yp752eqffq'),
@@ -102,7 +101,7 @@ export class GanacheServer {
 
     await this.marketplace.mint(
       [
-        new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma')
+        'bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma'
         // new NFT('bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa'),
         // new NFT('bafkreifinm6ci4kkzn4kqljies3btkb4uj7ustyktx3tggwaktfenswd3y'),
         // new NFT('bafkreif273jgam2ie25zs2yovfpqfxvinnvcykfko4cdbvpvp36pmrrane'),

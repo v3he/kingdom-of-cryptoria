@@ -55,15 +55,11 @@ class DatabaseManager {
   }
 
   static getAllNFTs(): NFT[] {
-    return this.db.prepare('SELECT * FROM nfts').all() as NFT[]
-  }
-
-  static getNFTsOnSale(): NFT[] {
     return this.db
       .prepare(
         `
         SELECT nfts.id, nfts.owner, nfts.ipfs, sell_orders.amount
-        FROM nfts INNER JOIN sell_orders 
+        FROM nfts LEFT JOIN sell_orders 
         ON nfts.id = sell_orders.nft_id
       `
       )

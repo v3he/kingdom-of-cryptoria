@@ -1,19 +1,31 @@
 <script lang="ts">
+  import { getContext } from 'svelte'
   import { Direction } from '$lib/types/Direction'
-  import { wallet, currentPage, navigation } from '$lib/store'
   import { Navigation } from '$lib/types/Navigation'
+  import { wallet, currentPage, navigation } from '$lib/store'
+  import type { NFT } from '$lib/server/db/types/NFT'
 
   let pages: number[] = []
+  let collection: NFT[] = getContext('collection') || []
 
-  $: pages = Array.from(
-    {
-      length: Math.ceil(
-        $wallet?.nfts?.filter((nft) => ($navigation === Navigation.MY_NFTS ? nft.owned : true))
-          .length / 6
-      )
-    },
-    (_, index) => index + 1
-  )
+  $: {
+    let filteredNFTs: NFT[] = []
+    switch ($navigation) {
+      case Navigation.MY_NFTS:
+        filteredNFTs = collection.filter((nft) => nft.owner.toLowerCase() === $wallet?.account)
+        break
+      case Navigation.ON_SALE:
+        filteredNFTs = collection.filter((nft) => nft.amount != null)
+        break
+      default:
+        filteredNFTs = collection
+        break
+    }
+    pages = Array.from(
+      { length: Math.ceil(filteredNFTs.length / 6)},
+      (_, index) => index + 1
+    )
+  }
 
   const navigate = (direction: Direction) => {
     if (direction === Direction.LEFT && $currentPage > 1) {

@@ -10,7 +10,7 @@
   }
 
   const notFoundMessages: string[] = [
-    "Houston, we have a problem. The NFTs have left the building!",
+    'Houston, we have a problem. The NFTs have left the building!',
     "We've hit an NFT dry spell here. Time to summon the rain dance!",
     "The NFTs appear to be playing hide and seek, and they're really good at it!",
     "It seems like we've embarked on a ghost hunt. No NFTs detected in this vicinity!",

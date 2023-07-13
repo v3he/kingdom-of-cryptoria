@@ -2,29 +2,21 @@
   import { selected } from '$lib/store'
   import { AttributeType } from '$lib/types/Metadata'
 
-  const health = $selected?.attributes?.find((a) => a.trait_type === AttributeType.HEALTH)?.value
-  const attack = $selected?.attributes?.find((a) => a.trait_type === AttributeType.ATTACK)?.value
-  const defense = $selected?.attributes?.find((a) => a.trait_type === AttributeType.DEFENSE)?.value
+  const findTraitValue = (trait: AttributeType) => $selected?.metadata.attributes?.find((a) => a.trait_type === trait)?.value
 
-  const onBuy = () => {
-    console.log('buy nft')
-  }
+  $: health = findTraitValue(AttributeType.HEALTH)
+  $: attack = findTraitValue(AttributeType.ATTACK)
+  $: defense = findTraitValue(AttributeType.DEFENSE)
 
-  const onSell = () => {
-    console.log('sell nft')
-  }
+  const onBuy = () => console.log('buy nft')
+  const onSell = () => console.log('sell nft')
+  const onCancelSale = () => console.log('cancel sale')
 
-  const onCancelSale = () => {
-    console.log('cancel sale')
-  }
-
-  const buttons = () => {
-    return [
-      { class: 'buy-nft', click: onBuy },
-      { class: 'sell-nft', click: onSell },
-      { class: 'cancel-sale-nft', click: onCancelSale }
-    ]
-  }
+  const buttons = [
+    { class: 'buy-nft', click: onBuy },
+    { class: 'sell-nft', click: onSell },
+    { class: 'cancel-sale-nft', click: onCancelSale }
+  ]
 </script>
 
 <div class="nft-detail-view__container">
@@ -33,28 +25,18 @@
   </div>
   <div class="main__container">
     <div class="nft__container">
-      <img src="/images/nfts/{$selected?.trace}/idle.gif" alt="NFT Animation" />
+      <img src={`/images/nfts/${$selected?.metadata.trace}/idle.gif`} alt="NFT Animation" />
       <div class="stats">
-        <div class="stat__item">
-          <img src="/images/heart.png" alt="Health" /><span>{health}</span>
-        </div>
-        <div class="stat__item">
-          <img src="/images/sword32.png" alt="Attack" /><span>{attack}</span>
-        </div>
-        <div class="stat__item">
-          <img src="/images/shield32.png" alt="Defense" /><span>{defense}</span>
-        </div>
+        <div class="stat__item"><img src="/images/heart.png" alt="Health" /><span>{health}</span></div>
+        <div class="stat__item"><img src="/images/sword32.png" alt="Attack" /><span>{attack}</span></div>
+        <div class="stat__item"><img src="/images/shield32.png" alt="Defense" /><span>{defense}</span></div>
       </div>
     </div>
     <div class="info__container">
-      <div class="info__item rm-mg-top">
-        <p><strong>Name:</strong> {$selected?.name}</p>
-      </div>
-      <div class="info__item">
-        <p><strong>Description:</strong> {$selected?.description}</p>
-      </div>
+      <div class="info__item rm-mg-top"><p><strong>Name:</strong> {$selected?.metadata.name}</p></div>
+      <div class="info__item"><p><strong>Description:</strong> {$selected?.metadata.description}</p></div>
       <div class="info__item actions">
-        {#each buttons() as button}
+        {#each buttons as button}
           <button class={button.class} on:click={button.click} />
         {/each}
       </div>

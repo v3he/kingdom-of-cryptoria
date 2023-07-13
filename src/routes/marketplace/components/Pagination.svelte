@@ -21,10 +21,7 @@
         filteredNFTs = collection
         break
     }
-    pages = Array.from(
-      { length: Math.ceil(filteredNFTs.length / 6)},
-      (_, index) => index + 1
-    )
+    pages = Array.from({ length: Math.ceil(filteredNFTs.length / 6) }, (_, index) => index + 1)
   }
 
   const navigate = (direction: Direction) => {

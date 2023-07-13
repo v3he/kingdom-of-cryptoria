@@ -84,7 +84,7 @@ export class GanacheServer {
     await this.marketplace.mint([
       // 'bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy',
       // 'bafkreift35nigg32refqiy2whclkn5nlg3ljefjt5ps4mnjlosiukry7ou',
-      'bafkreifwznslzg4kmbz67czftvx6eyvu5uf5aq3fplhgshfnvo6civrz4e',
+      'bafkreifwznslzg4kmbz67czftvx6eyvu5uf5aq3fplhgshfnvo6civrz4e'
       // 'bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa',
       // 'bafkreibngg4tdgmxqaz6akqlz3jezp5wjfmvgrt5rwr6a6ay6stufnhrbq',
       // 'bafkreicax3m6lx7fxtajjyyh4qcxqohdzihjqcds2m4wccw4yp752eqffq',

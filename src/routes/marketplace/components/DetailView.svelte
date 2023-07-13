@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selected } from '$lib/store'
+  import { wallet, selected } from '$lib/store'
   import { AttributeType } from '$lib/types/Metadata'
 
   const findTraitValue = (trait: AttributeType) => $selected?.metadata.attributes?.find((a) => a.trait_type === trait)?.value
@@ -12,11 +12,25 @@
   const onSell = () => console.log('sell nft')
   const onCancelSale = () => console.log('cancel sale')
 
-  const buttons = [
-    { class: 'buy-nft', click: onBuy },
-    { class: 'sell-nft', click: onSell },
-    { class: 'cancel-sale-nft', click: onCancelSale }
-  ]
+  let buttons: any = []
+
+  $: {
+    const isOnSale = Boolean($selected?.amount)
+    const isOwnedByUser = $selected?.owner?.toLowerCase() === $wallet?.account
+  
+    if(isOnSale && !isOwnedByUser) {
+      buttons.push({ class: 'buy-nft', click: onBuy });
+    }
+
+    if(!isOnSale && isOwnedByUser) {
+      buttons.push({ class: 'sell-nft', click: onSell });
+    }
+
+    if(isOnSale && isOwnedByUser) {
+      buttons.push({ class: 'cancel-sale-nft', click: onCancelSale });
+    }
+  }
+
 </script>
 
 <div class="nft-detail-view__container">

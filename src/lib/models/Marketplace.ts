@@ -1,9 +1,9 @@
 import type { NFT } from './NFT'
 
-import { createNFT, createSellOrder } from '$lib/server/db'
 import { SmartContract } from './ SmartContract'
 import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
 import { MarketplaceEvent } from '$lib/types/MarketplaceEvents'
+import Database from '$lib/server/db'
 
 export class Marketplace extends SmartContract {
   signer: JsonRpcSigner
@@ -39,7 +39,7 @@ export class Marketplace extends SmartContract {
       const owner: string = log?.args[1]
       const nftID: number = log?.args[2].toString() as number
 
-      createNFT(owner, nftID, nft.metadata)
+      Database.createNFT(owner, nftID, nft.metadata)
 
       if (address == this.signer.address) {
         await (await this.contract.postSellOrder(nftID, Math.floor(Math.random() * 15) + 1)).wait()
@@ -49,7 +49,7 @@ export class Marketplace extends SmartContract {
 
   private startEventListener(): void {
     this.contract.on(MarketplaceEvent.SELL_ORDER_LISTED, (owner, id, amount) => {
-      createSellOrder({ owner, nftID: id, amount })
+      Database.createSellOrder({ owner, nftID: id, amount })
     })
   }
 }

@@ -10,6 +10,8 @@
 
   export let data: PageData
 
+  console.log(data)
+
   let container: HTMLDivElement
 
   onMount(async () => {
@@ -18,12 +20,12 @@
     }
 
     $wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
-    await $wallet.setNFTContract(data.nft.address, data.nft.abi)
+    // await $wallet.setNFTContract(data.nft.address, data.nft.abi)
 
     wallet.set($wallet)
 
     GameFactory.container(container)
-      .players($wallet?.nfts?.filter((n) => n.owned).map((n) => n.trace))
+      // .players($wallet?.nfts?.filter((n) => n.owned).map((n) => n.trace))
       .build()
   })
 </script>

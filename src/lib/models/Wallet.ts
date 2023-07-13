@@ -25,7 +25,7 @@ export class Wallet {
   private _nftContract: Contract
 
   get account(): string {
-    return this.accounts[0]
+    return this.accounts[0].toLowerCase()
   }
 
   async isConnected() {
@@ -40,29 +40,6 @@ export class Wallet {
 
   async setNFTContract(address: string, abi: string): Promise<void> {
     this._nftContract = new ethers.Contract(address, abi, this._provider)
-    await this.fetchNFTs()
-  }
-
-  private async fetchNFTs(): Promise<void> {
-    const totalSupply = (await this._nftContract.totalSupply())?.toString() as number
-    const promises = Array.from({ length: totalSupply }, (_, i) => this.fetchNFT(i + 1))
-    this.nfts = (await Promise.all(promises)).filter(Boolean) as Metadata[]
-  }
-
-  private async fetchNFT(tokenId: number): Promise<Metadata | null> {
-    let tokenURI = await this._nftContract.tokenURI(tokenId)
-
-    if (tokenURI.startsWith('ipfs://')) {
-      tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/')
-    }
-
-    const response = await fetch(tokenURI)
-    const metadata: Metadata = await response.json()
-
-    metadata.owner = await this._nftContract.ownerOf(tokenId)
-    metadata.owned = metadata.owner.toUpperCase() === this.account.toUpperCase()
-
-    return metadata
   }
 
   private startEventListeners(): void {

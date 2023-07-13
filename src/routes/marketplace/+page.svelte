@@ -7,10 +7,9 @@
   import Marketplace from './components/Marketplace.svelte'
 
   import type { PageData } from './$types'
+  import type { NFT } from '$lib/server/db/types/NFT'
 
   export let data: PageData
-
-  console.log(data)
 
   let container: HTMLDivElement
 
@@ -20,12 +19,13 @@
     }
 
     $wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
-    // await $wallet.setNFTContract(data.nft.address, data.nft.abi)
 
     wallet.set($wallet)
 
     GameFactory.container(container)
-      // .players($wallet?.nfts?.filter((n) => n.owned).map((n) => n.trace))
+      .players(
+        data.nft.collection.filter((nft: NFT) => nft.owner.toLowerCase() === $wallet.account)
+      )
       .build()
   })
 </script>

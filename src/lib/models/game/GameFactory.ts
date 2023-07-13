@@ -1,7 +1,8 @@
 import { Game } from './Game'
+import type { NFT } from '$lib/server/db/types/NFT'
 
 export class GameFactory {
-  private static _players: string[]
+  private static _players: NFT[]
   private static _container: HTMLDivElement
 
   static container(container: HTMLDivElement): typeof GameFactory {
@@ -9,7 +10,7 @@ export class GameFactory {
     return this
   }
 
-  static players(players: string | string[]): typeof GameFactory {
+  static players(players: NFT | NFT[]): typeof GameFactory {
     this._players = Array.isArray(players) ? players : [players]
     return this
   }

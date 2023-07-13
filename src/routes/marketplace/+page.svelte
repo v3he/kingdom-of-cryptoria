@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, setContext } from 'svelte'
   import { ethers } from 'ethers'
   import { wallet } from '$lib/store'
   import { goto } from '$app/navigation'
@@ -12,6 +12,8 @@
   export let data: PageData
 
   let container: HTMLDivElement
+
+  setContext('collection', data.nft.collection)
 
   onMount(async () => {
     if (!window.ethereum?.isMetaMask || !(await $wallet.isConnected())) {

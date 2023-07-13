@@ -1,26 +1,39 @@
 <script lang="ts">
+  import { getContext } from 'svelte'
   import { Navigation } from '$lib/types/Navigation'
+  import { AttributeType, type Attribute } from '$lib/types/Metadata'
   import { wallet, currentPage, navigation, selected } from '$lib/store'
-  import { AttributeType, type Attribute, type Metadata } from '$lib/types/Metadata'
+  import type { NFT } from '$lib/server/db/types/NFT'
 
   const rarity = (attributes: Attribute[]) => {
     return attributes.find((a) => a.trait_type === AttributeType.CATEGORY)?.value
   }
 
   const notFoundMessages: string[] = [
-    'Houston, we have a problem. The NFTs have left the building!',
+    "Houston, we have a problem. The NFTs have left the building!",
     "We've hit an NFT dry spell here. Time to summon the rain dance!",
     "The NFTs appear to be playing hide and seek, and they're really good at it!",
     "It seems like we've embarked on a ghost hunt. No NFTs detected in this vicinity!",
     "Whoa! It's tumbleweed central here. No NFTs found in this part of the blockchain desert!"
   ]
 
-  let nfts: Metadata[] = []
+  let nfts: NFT[] = []
+  let collection: NFT[] = getContext('collection') || []
 
-  $: nfts =
-    $wallet?.nfts
-      ?.filter((nft) => ($navigation === Navigation.MY_NFTS ? nft.owned : true))
-      ?.slice(($currentPage - 1) * 6, $currentPage * 6) || []
+  $: {
+    switch ($navigation) {
+      case Navigation.MY_NFTS:
+        nfts = collection.filter((nft) => nft.owner.toLowerCase() === $wallet?.account)
+        break
+      case Navigation.ON_SALE:
+        nfts = collection.filter((nft) => nft.amount != null)
+        break
+      default:
+        nfts = collection
+        break
+    }
+    nfts = nfts.slice(($currentPage - 1) * 6, $currentPage * 6)
+  }
 </script>
 
 <div class="nft-viewer__container">
@@ -36,11 +49,11 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div class="nft__container" on:click={() => selected.set(nft)}>
-        <span class="rarity {rarity(nft?.attributes)?.toString().toLowerCase()}"
-          >{rarity(nft?.attributes)}</span>
-        <img src="/images/nfts/{nft?.trace}/idle.gif" alt="NFT Animation" />
+        <span class="rarity {rarity(nft.metadata.attributes)?.toString().toLowerCase()}"
+          >{rarity(nft.metadata.attributes)}</span>
+        <img src="/images/nfts/{nft.metadata.trace}/idle.gif" alt="NFT Animation" />
         <div class="stats">
-          {#each nft?.attributes as attr}
+          {#each nft.metadata.attributes as attr}
             {#if attr.trait_type === AttributeType.HEALTH}
               <div class="stat__item">
                 <img src="/images/heart.png" alt="Health" /><span>{attr.value}</span>
@@ -126,8 +139,6 @@
 
       img {
         width: 150px;
-        // transform-origin: center center;
-        // transform: scale(1.1);
       }
 
       .stats {

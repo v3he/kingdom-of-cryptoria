@@ -4,11 +4,13 @@
   import DetailView from './DetailView.svelte'
   import Pagination from './Pagination.svelte'
 
-  import { selected, currentPage, isMarketOpen } from '$lib/store'
+  import { View } from '$lib/types/View'
+  import { view, selected, currentPage, isMarketOpen } from '$lib/store'
 
   const onClose = () => {
     selected.set(null)
     currentPage.set(1)
+    view.set(View.INFO)
     isMarketOpen.set(false)
   }
 </script>
@@ -62,6 +64,7 @@
     }
 
     .stone-background__container {
+      z-index: 3;
       width: 923px;
       height: 619px;
       position: relative;

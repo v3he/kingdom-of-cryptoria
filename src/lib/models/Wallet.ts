@@ -25,7 +25,7 @@ export class Wallet {
   private _nftContract: Contract
 
   get account(): string {
-    return this.accounts[0].toLowerCase()
+    return this.accounts[0]?.toLowerCase()
   }
 
   async isConnected() {

@@ -15,7 +15,7 @@
   </div>
   <div class="form__container">
     <input type="number" id="amount" name="amount" placeholder="10" required>
-    <label for="amount"><strong>CRE</strong></label>
+    <label for="amount"><strong>EST</strong></label>
   </div>
   <div class="action__buttons">
     <button class="accept" on:click={sellNFT}></button>

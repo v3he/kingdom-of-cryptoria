@@ -18,7 +18,11 @@ const defaultOptions = {
   database: {
     dbPath: DB_PATH
   },
+  chain: {
+    chainId: 5555
+  },
   wallet: {
+    totalAccounts: 5,
     deterministic: true,
     defaultBalance: 100,
     accountKeysPath: ACCOUNT_KEYS_PATH
@@ -81,7 +85,7 @@ export class GanacheServer {
     }
 
     await this.marketplace.deploy(compiledOutput)
-    await this.marketplace.mint([
+    await this.marketplace.mintNFTs([
       // 'bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy',
       // 'bafkreift35nigg32refqiy2whclkn5nlg3ljefjt5ps4mnjlosiukry7ou',
       'bafkreifwznslzg4kmbz67czftvx6eyvu5uf5aq3fplhgshfnvo6civrz4e'
@@ -99,7 +103,7 @@ export class GanacheServer {
       // new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma')
     ])
 
-    await this.marketplace.mint(
+    await this.marketplace.mintNFTs(
       [
         'bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma'
         // new NFT('bafkreib5hnrfnfko5zyc57zp7j6meno4yrw3xb6c7t4p2heujsuxj5xzoa'),
@@ -109,7 +113,9 @@ export class GanacheServer {
         // new NFT('bafkreigsqz3s3cqr63e6jq65iwduzcinjgiveizch3kjzdciz37x6ln3zq'),
         // new NFT('bafkreief6hpicjfiz5sweqqsyiqclhnfkscqba5jboa7xxpmmdcy3mj3fm')
       ],
-      '0x22d491bde2303f2f43325b2108d26f1eaba1e32b'
+      '0xe11ba2b4d45eaed5996cd0823791e0c93114882d'
     )
+
+    await this.marketplace.mintEtherStones(100, this.accounts.map((acc: Account) => acc.pubKey))
   }
 }

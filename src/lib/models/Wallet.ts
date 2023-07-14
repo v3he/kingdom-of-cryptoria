@@ -3,8 +3,8 @@ import type { Metadata } from '$lib/types/Metadata'
 
 import { ethers, type BrowserProvider, Contract } from 'ethers'
 
-const chainOptions = {
-  chainId: '0x539',
+let chainOptions = {
+  chainId: '0x15B3',
   chainName: 'Kingdom Of Cryptoria',
   rpcUrls: ['http://127.0.0.1:8545'],
   iconUrls: [],
@@ -14,6 +14,16 @@ const chainOptions = {
     decimals: 18
   },
   blockExplorerUrls: ['https://etherscan.io']
+}
+
+let tokenOptions = {
+  type: 'ERC20',
+  options: {
+    address: '',
+    symbol: 'EST',
+    decimals: 18,
+    image: 'https://foo.io/token-image.svg'
+  }
 }
 
 export class Wallet {
@@ -49,6 +59,13 @@ export class Wallet {
   async promptChainCreation() {
     await window.ethereum
       .request({ method: 'wallet_addEthereumChain', params: [chainOptions] })
+      .catch((error: MetaMaskError) => console.log(error))
+  }
+
+  async promptTokenCreation(token: string) {
+    tokenOptions.options.address = token
+    await window.ethereum
+      .request({ method: 'wallet_watchAsset', params: tokenOptions })
       .catch((error: MetaMaskError) => console.log(error))
   }
 }

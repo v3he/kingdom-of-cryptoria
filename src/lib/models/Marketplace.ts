@@ -25,7 +25,7 @@ export class Marketplace extends SmartContract {
     this.startEventListener()
   }
 
-  async mint(nfts: string[], address: string = this.signer.address): Promise<void> {
+  async mintNFTs(nfts: string[], address: string = this.signer.address): Promise<void> {
     for (const nft of nfts) {
       const receipt: ContractTransactionReceipt = await (
         await this.nft.contract.safeMint(address, nft)
@@ -55,6 +55,12 @@ export class Marketplace extends SmartContract {
         return { ...nft, metadata }
       })
     )
+  }
+
+  async mintEtherStones(amount: number, accounts: string[]): Promise<void> {
+    for (const account of accounts) {
+      await (await this.currency.contract.mint(account, BigInt(amount) * BigInt(10 ** 18))).wait()
+    }
   }
 
   private startEventListener(): void {

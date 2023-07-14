@@ -3,9 +3,9 @@
   import { wallet } from '$lib/store'
   import { goto } from '$app/navigation'
 
-  // import type { PageData } from './$types'
+  import type { PageData } from './$types'
 
-  // export let data: PageData
+  export let data: PageData
 
   let isMetaMask = false
   let isConnected = false
@@ -25,7 +25,8 @@
       return
     }
 
-    $wallet.promptChainCreation()
+    await $wallet.promptChainCreation()
+    await $wallet.promptTokenCreation(data.token)
 
     return goto('/marketplace')
   }

@@ -44,14 +44,18 @@ class DatabaseManager {
     `)
   }
 
-  static createNFT(owner: string, nftId: number, ipfs: string) {
-    this.db.prepare('INSERT INTO nfts VALUES (?, ?, ?)').run(nftId, owner, ipfs)
+  static createNFT(owner: string, nftID: number, ipfs: string) {
+    this.db.prepare('INSERT INTO nfts VALUES (?, ?, ?)').run(nftID, owner, ipfs)
   }
 
   static createSellOrder(order: SellOrder) {
     this.db
       .prepare('INSERT INTO sell_orders VALUES (?, ?, ?)')
       .run(order.owner, order.nftID, order.amount)
+  }
+
+  static cancelSellOrder(nftID: string) {
+    this.db.prepare('DELETE FROM sell_orders WHERE nft_id = ?').run(nftID)
   }
 
   static getAllNFTs(): NFT[] {

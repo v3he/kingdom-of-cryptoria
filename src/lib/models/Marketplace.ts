@@ -68,5 +68,8 @@ export class Marketplace extends SmartContract {
     this.contract.on(MarketplaceEvent.SELL_ORDER_LISTED, (owner, id, amount) => {
       Database.createSellOrder({ owner, nftID: id, amount })
     })
+    this.contract.on(MarketplaceEvent.SELL_ORDER_CANCELLED, (id) => {
+      Database.cancelSellOrder(id)
+    })
   }
 }

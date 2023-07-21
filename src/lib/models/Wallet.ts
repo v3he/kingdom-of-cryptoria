@@ -61,21 +61,6 @@ export class Wallet {
     this._marketplaceContract = new ethers.Contract(address, abi, this._signer)
   }
 
-  // refactor and do error handling
-  async createSellOrder(nftID: number, amount: number): Promise<void> {
-    try {
-      await (
-        await this._nftContract.approve(await this._marketplaceContract.getAddress(), nftID)
-      ).wait()
-      await (await this._marketplaceContract.postSellOrder(nftID, amount)).wait()
-
-      setTimeout(async () => await invalidateAll(), 5000)
-    } catch (error) {
-      console.log(error)
-      console.log('unable to create sell order')
-    }
-  }
-
   private startEventListeners(): void {
     window.ethereum.on(MetaMask.ON_ACCOUNT_CHANGE, () => window.location.reload())
   }
@@ -91,5 +76,28 @@ export class Wallet {
     await window.ethereum
       .request({ method: MetaMask.ADD_TOKEN, params: tokenOptions })
       .catch((error: MetaMaskError) => console.log(error))
+  }
+
+  // refactor and do error handling
+  async createSellOrder(nftID: number, amount: number): Promise<void> {
+    try {
+      await (
+        await this._nftContract.approve(await this._marketplaceContract.getAddress(), nftID)
+      ).wait()
+      await (await this._marketplaceContract.postSellOrder(nftID, amount)).wait()
+      setTimeout(async () => await invalidateAll(), 5000)
+    } catch (error) {
+      console.log('unable to create sell order', error)
+    }
+  }
+
+  // refactor and do error handling
+  async cancelSellOrder(nftID: number): Promise<void> {
+    try {
+      await (await this._marketplaceContract.cancelSellOrder(nftID)).wait()
+      setTimeout(async () => await invalidateAll(), 5000)
+    } catch (error) {
+      console.log('unable to cancel sell order', error)
+    }
   }
 }

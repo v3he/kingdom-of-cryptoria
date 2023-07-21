@@ -4,7 +4,12 @@
 
   const onBuy = () => view.set(View.BUY)
   const onSell = () => view.set(View.SELL)
-  const onCancelSale = () => console.log('cancel sale')
+
+  const onCancelSale = async () => {
+    if ($selected) {
+      await $wallet.cancelSellOrder($selected.id)
+    }
+  }
 
   let buttons: any = []
 

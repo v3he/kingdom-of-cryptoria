@@ -12,3 +12,5 @@ export const navigation = writable<Navigation>(Navigation.MY_NFTS)
 
 export const view = writable<View>(View.INFO)
 export const collection = writable<NFT[]>([])
+
+export const progress = writable<number>(10)

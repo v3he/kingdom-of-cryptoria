@@ -1,29 +1,37 @@
 <script lang="ts">
   import { View } from '$lib/types/View'
-  import { view, wallet, selected } from '$lib/store'
+  import { view, wallet, selected, progress } from '$lib/store'
+  import ProgressBar from './ProgressBar.svelte'
 
   let amount = undefined
 
-  const sellNFT = async () => {
+  let isProgressBar = false
+
+  const createSellOrder = async () => {
     if (amount && $selected) {
+      isProgressBar = true
       await $wallet.createSellOrder($selected.id, amount)
     }
   }
 </script>
 
 <div class="sell__container">
-  <div class="title__container">
-    <h2>Are you sure you want to sell this NFT?</h2>
-    <p>Please set the selling price:</p>
-  </div>
-  <div class="form__container">
-    <input type="number" id="amount" name="amount" placeholder="10" required bind:value={amount} />
-    <label for="amount"><strong>EST</strong></label>
-  </div>
-  <div class="action__buttons">
-    <button class="accept" on:click={sellNFT} />
-    <button class="cancel" on:click={() => view.set(View.INFO)} />
-  </div>
+  {#if isProgressBar}
+    <ProgressBar />
+  {:else}
+    <div class="title__container">
+      <h2>Are you sure you want to sell this NFT?</h2>
+      <p>Please set the selling price:</p>
+    </div>
+    <div class="form__container">
+      <input type="number" id="amount" name="amount" placeholder="10" required bind:value={amount} />
+      <label for="amount"><strong>EST</strong></label>
+    </div>
+    <div class="action__buttons">
+      <button class="accept" on:click={createSellOrder} />
+      <button class="cancel" on:click={() => view.set(View.INFO)} />
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">

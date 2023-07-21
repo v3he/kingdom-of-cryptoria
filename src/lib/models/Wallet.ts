@@ -4,6 +4,7 @@ import type { Metadata } from '$lib/types/Metadata'
 import { ethers, type BrowserProvider, Contract, JsonRpcSigner } from 'ethers'
 import { MetaMask } from '$lib/types/MetaMask'
 import { invalidateAll } from '$app/navigation'
+import { progress } from '$lib/store'
 
 let chainOptions = {
   chainId: '0x15B3',
@@ -81,11 +82,18 @@ export class Wallet {
   // refactor and do error handling
   async createSellOrder(nftID: number, amount: number): Promise<void> {
     try {
-      await (
-        await this._nftContract.approve(await this._marketplaceContract.getAddress(), nftID)
-      ).wait()
+
+      const addr: string = await this._marketplaceContract.getAddress()
+      await (await this._nftContract.approve(addr, nftID)).wait()
+
+      progress.update(n => n + 40)
+
       await (await this._marketplaceContract.postSellOrder(nftID, amount)).wait()
+
+      progress.update(n => n + 40)
+
       setTimeout(async () => await invalidateAll(), 5000)
+
     } catch (error) {
       console.log('unable to create sell order', error)
     }

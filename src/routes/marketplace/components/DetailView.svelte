@@ -6,25 +6,35 @@
   import { View } from '$lib/types/View'
   import { AttributeType } from '$lib/types/Metadata'
 
-  const findTraitValue = (trait: AttributeType) => $selected?.metadata.attributes?.find((a) => a.trait_type === trait)?.value
+  const findTraitValue = (trait: AttributeType) =>
+    $selected?.metadata.attributes?.find((a) => a.trait_type === trait)?.value
 
   $: health = findTraitValue(AttributeType.HEALTH)
   $: attack = findTraitValue(AttributeType.ATTACK)
   $: defense = findTraitValue(AttributeType.DEFENSE)
-
 </script>
 
 <div class="nft-detail-view__container">
   <div class="navigation__container">
-    <button on:click={() => {selected.set(null); view.set(View.INFO)}}>&lt; Marketplace</button>
+    <button
+      on:click={() => {
+        selected.set(null)
+        view.set(View.INFO)
+      }}>&lt; Marketplace</button>
   </div>
   <div class="main__container">
     <div class="nft__container">
       <img src={`/images/nfts/${$selected?.metadata.trace}/idle.gif`} alt="NFT Animation" />
       <div class="stats">
-        <div class="stat__item"><img src="/images/heart.png" alt="Health" /><span>{health}</span></div>
-        <div class="stat__item"><img src="/images/sword32.png" alt="Attack" /><span>{attack}</span></div>
-        <div class="stat__item"><img src="/images/shield32.png" alt="Defense" /><span>{defense}</span></div>
+        <div class="stat__item">
+          <img src="/images/heart.png" alt="Health" /><span>{health}</span>
+        </div>
+        <div class="stat__item">
+          <img src="/images/sword32.png" alt="Attack" /><span>{attack}</span>
+        </div>
+        <div class="stat__item">
+          <img src="/images/shield32.png" alt="Defense" /><span>{defense}</span>
+        </div>
       </div>
     </div>
     {#if $view === View.INFO}

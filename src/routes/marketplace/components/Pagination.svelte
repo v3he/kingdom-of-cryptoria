@@ -1,24 +1,22 @@
 <script lang="ts">
-  import { getContext } from 'svelte'
   import { Direction } from '$lib/types/Direction'
   import { Navigation } from '$lib/types/Navigation'
-  import { wallet, currentPage, navigation } from '$lib/store'
+  import { wallet, currentPage, navigation, collection } from '$lib/store'
   import type { NFT } from '$lib/server/db/types/NFT'
 
   let pages: number[] = []
-  let collection: NFT[] = getContext('collection') || []
 
   $: {
     let filteredNFTs: NFT[] = []
     switch ($navigation) {
       case Navigation.MY_NFTS:
-        filteredNFTs = collection.filter((nft) => nft.owner.toLowerCase() === $wallet?.account)
+        filteredNFTs = $collection.filter((nft) => nft.owner.toLowerCase() === $wallet?.account)
         break
       case Navigation.ON_SALE:
-        filteredNFTs = collection.filter((nft) => nft.amount != null)
+        filteredNFTs = $collection.filter((nft) => nft.amount != null)
         break
       default:
-        filteredNFTs = collection
+        filteredNFTs = $collection
         break
     }
     pages = Array.from({ length: Math.ceil(filteredNFTs.length / 6) }, (_, index) => index + 1)

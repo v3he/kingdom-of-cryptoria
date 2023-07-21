@@ -11,25 +11,26 @@
   $: {
     const isOnSale = Boolean($selected?.amount)
     const isOwnedByUser = $selected?.owner?.toLowerCase() === $wallet?.account
-  
-    if(isOnSale && !isOwnedByUser) {
-      buttons.push({ class: 'buy-nft', click: onBuy });
+
+    if (isOnSale && !isOwnedByUser) {
+      buttons.push({ class: 'buy-nft', click: onBuy })
     }
 
-    if(!isOnSale && isOwnedByUser) {
-      buttons.push({ class: 'sell-nft', click: onSell });
+    if (!isOnSale && isOwnedByUser) {
+      buttons.push({ class: 'sell-nft', click: onSell })
     }
 
-    if(isOnSale && isOwnedByUser) {
-      buttons.push({ class: 'cancel-sale-nft', click: onCancelSale });
+    if (isOnSale && isOwnedByUser) {
+      buttons.push({ class: 'cancel-sale-nft', click: onCancelSale })
     }
   }
-
 </script>
 
 <div class="info__container">
   <div class="info__item rm-mg-top"><p><strong>Name:</strong> {$selected?.metadata.name}</p></div>
-  <div class="info__item"><p><strong>Description:</strong> {$selected?.metadata.description}</p></div>
+  <div class="info__item">
+    <p><strong>Description:</strong> {$selected?.metadata.description}</p>
+  </div>
   <div class="info__item actions">
     {#each buttons as button}
       <button class={button.class} on:click={button.click} />

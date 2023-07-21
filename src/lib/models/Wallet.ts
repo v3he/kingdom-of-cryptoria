@@ -1,7 +1,9 @@
 import type { Marketplace } from './Marketplace'
 import type { Metadata } from '$lib/types/Metadata'
 
-import { ethers, type BrowserProvider, Contract } from 'ethers'
+import { ethers, type BrowserProvider, Contract, JsonRpcSigner } from 'ethers'
+import { MetaMask } from '$lib/types/MetaMask'
+import { invalidateAll } from '$app/navigation'
 
 let chainOptions = {
   chainId: '0x15B3',
@@ -31,41 +33,63 @@ export class Wallet {
   accounts: string[] = []
   marketplace: Marketplace
 
+  private _signer: JsonRpcSigner
   private _provider: BrowserProvider
   private _nftContract: Contract
+  private _marketplaceContract: Contract
 
   get account(): string {
     return this.accounts[0]?.toLowerCase()
   }
 
   async isConnected() {
-    this.accounts = await window.ethereum.request({ method: 'eth_accounts' })
+    this.accounts = await window.ethereum.request({ method: MetaMask.ACCOUNTS })
     return this.accounts.length > 0
   }
 
-  setProvider(provider: BrowserProvider): void {
+  async setProvider(provider: BrowserProvider): Promise<void> {
     this._provider = provider
+    this._signer = await provider.getSigner()
     this.startEventListeners()
   }
 
-  async setNFTContract(address: string, abi: string): Promise<void> {
-    this._nftContract = new ethers.Contract(address, abi, this._provider)
+  createNFTContract(address: string, abi: string): void {
+    this._nftContract = new ethers.Contract(address, abi, this._signer)
+  }
+
+  createMarketplaceContract(address: string, abi: string): void {
+    this._marketplaceContract = new ethers.Contract(address, abi, this._signer)
+  }
+
+  // refactor and do error handling
+  async createSellOrder(nftID: number, amount: number): Promise<void> {
+    try {
+      await (
+        await this._nftContract.approve(await this._marketplaceContract.getAddress(), nftID)
+      ).wait()
+      await (await this._marketplaceContract.postSellOrder(nftID, amount)).wait()
+
+      setTimeout(async () => await invalidateAll(), 5000)
+    } catch (error) {
+      console.log(error)
+      console.log('unable to create sell order')
+    }
   }
 
   private startEventListeners(): void {
-    window.ethereum.on('accountsChanged', () => window.location.reload())
+    window.ethereum.on(MetaMask.ON_ACCOUNT_CHANGE, () => window.location.reload())
   }
 
   async promptChainCreation() {
     await window.ethereum
-      .request({ method: 'wallet_addEthereumChain', params: [chainOptions] })
+      .request({ method: MetaMask.ADD_CHAIN, params: [chainOptions] })
       .catch((error: MetaMaskError) => console.log(error))
   }
 
   async promptTokenCreation(token: string) {
     tokenOptions.options.address = token
     await window.ethereum
-      .request({ method: 'wallet_watchAsset', params: tokenOptions })
+      .request({ method: MetaMask.ADD_TOKEN, params: tokenOptions })
       .catch((error: MetaMaskError) => console.log(error))
   }
 }

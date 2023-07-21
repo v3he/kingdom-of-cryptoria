@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { view } from "$lib/store"
-  import { View } from "$lib/types/View"
+  import { View } from '$lib/types/View'
+  import { view, wallet, selected } from '$lib/store'
 
-  const sellNFT = () => {
-    console.log('sell nft')
+  let amount = undefined
+
+  const sellNFT = async () => {
+    if (amount && $selected) {
+      await $wallet.createSellOrder($selected.id, amount)
+    }
   }
-
 </script>
 
 <div class="sell__container">
@@ -14,12 +17,12 @@
     <p>Please set the selling price:</p>
   </div>
   <div class="form__container">
-    <input type="number" id="amount" name="amount" placeholder="10" required>
+    <input type="number" id="amount" name="amount" placeholder="10" required bind:value={amount} />
     <label for="amount"><strong>EST</strong></label>
   </div>
   <div class="action__buttons">
-    <button class="accept" on:click={sellNFT}></button>
-    <button class="cancel" on:click={() => view.set(View.INFO)}></button>
+    <button class="accept" on:click={sellNFT} />
+    <button class="cancel" on:click={() => view.set(View.INFO)} />
   </div>
 </div>
 
@@ -42,7 +45,7 @@
         border: 2px solid #33281f;
         border-radius: 5px;
         background: none;
-      } 
+      }
       input::-webkit-outer-spin-button,
       input::-webkit-inner-spin-button {
         -webkit-appearance: none;

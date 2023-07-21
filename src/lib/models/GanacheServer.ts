@@ -113,9 +113,12 @@ export class GanacheServer {
         // new NFT('bafkreigsqz3s3cqr63e6jq65iwduzcinjgiveizch3kjzdciz37x6ln3zq'),
         // new NFT('bafkreief6hpicjfiz5sweqqsyiqclhnfkscqba5jboa7xxpmmdcy3mj3fm')
       ],
-      '0xe11ba2b4d45eaed5996cd0823791e0c93114882d'
+      '0xffcf8fdee72ac11b5c542428b35eef5769c409f0'
     )
 
-    await this.marketplace.mintEtherStones(100, this.accounts.map((acc: Account) => acc.pubKey))
+    await this.marketplace.mintEtherStones(
+      100,
+      this.accounts.map((acc: Account) => acc.pubKey)
+    )
   }
 }

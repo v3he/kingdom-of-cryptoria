@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onMount, setContext } from 'svelte'
   import { ethers } from 'ethers'
-  import { wallet } from '$lib/store'
+  import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
+  import { wallet, collection } from '$lib/store'
   import { GameFactory } from '$lib/models/game/GameFactory'
   import Marketplace from './components/Marketplace.svelte'
 
@@ -11,23 +11,28 @@
 
   export let data: PageData
 
-  let container: HTMLDivElement
+  $: {
+    if (data?.nft?.collection) {
+      collection.set(data.nft.collection)
+    }
+  }
 
-  setContext('collection', data.nft.collection)
+  let container: HTMLDivElement
 
   onMount(async () => {
     if (!window.ethereum?.isMetaMask || !(await $wallet.isConnected())) {
       return goto('/')
     }
 
-    $wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
+    await $wallet.setProvider(new ethers.BrowserProvider(window.ethereum))
+
+    $wallet.createNFTContract(data.nft.address, data.nft.abi)
+    $wallet.createMarketplaceContract(data.marketplace.address, data.marketplace.abi)
 
     wallet.set($wallet)
 
     GameFactory.container(container)
-      .players(
-        data.nft.collection.filter((nft: NFT) => nft.owner.toLowerCase() === $wallet.account)
-      )
+      .players($collection.filter((nft: NFT) => nft.owner.toLowerCase() === $wallet.account))
       .build()
   })
 </script>

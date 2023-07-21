@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { getContext } from 'svelte'
   import { Navigation } from '$lib/types/Navigation'
   import { AttributeType, type Attribute } from '$lib/types/Metadata'
-  import { wallet, currentPage, navigation, selected } from '$lib/store'
+  import { wallet, currentPage, navigation, selected, collection } from '$lib/store'
   import type { NFT } from '$lib/server/db/types/NFT'
 
   const rarity = (attributes: Attribute[]) => {
@@ -18,18 +17,17 @@
   ]
 
   let nfts: NFT[] = []
-  let collection: NFT[] = getContext('collection') || []
 
   $: {
     switch ($navigation) {
       case Navigation.MY_NFTS:
-        nfts = collection.filter((nft) => nft.owner.toLowerCase() === $wallet?.account)
+        nfts = $collection.filter((nft) => nft.owner.toLowerCase() === $wallet?.account)
         break
       case Navigation.ON_SALE:
-        nfts = collection.filter((nft) => nft.amount != null)
+        nfts = $collection.filter((nft) => nft.amount != null)
         break
       default:
-        nfts = collection
+        nfts = $collection
         break
     }
     nfts = nfts.slice(($currentPage - 1) * 6, $currentPage * 6)

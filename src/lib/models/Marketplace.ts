@@ -1,9 +1,10 @@
-import { SmartContract } from './ SmartContract'
-import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
-import { MarketplaceEvent } from '$lib/types/MarketplaceEvents'
 import Database from '$lib/server/db'
+import { SmartContract } from './ SmartContract'
+import { MarketplaceEvent } from '$lib/types/MarketplaceEvents'
+
 import type { NFT } from '$lib/server/db/types/NFT'
 import type { Metadata } from '$lib/types/Metadata'
+import type { ContractTransactionReceipt, JsonRpcSigner, LogDescription } from 'ethers'
 
 export class Marketplace extends SmartContract {
   signer: JsonRpcSigner

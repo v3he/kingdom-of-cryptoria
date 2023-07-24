@@ -4,7 +4,7 @@ import type { Metadata } from '$lib/types/Metadata'
 import { ethers, type BrowserProvider, Contract, JsonRpcSigner } from 'ethers'
 import { MetaMask } from '$lib/types/MetaMask'
 import { invalidateAll } from '$app/navigation'
-import { progress } from '$lib/store'
+import { progressBar } from '$lib/store'
 
 let chainOptions = {
   chainId: '0x15B3',
@@ -83,14 +83,16 @@ export class Wallet {
   async createSellOrder(nftID: number, amount: number): Promise<void> {
     try {
 
+      progressBar.set({percentage: 30, message: 'Pending transaction approval (1/3) ...'})
+
       const addr: string = await this._marketplaceContract.getAddress()
       await (await this._nftContract.approve(addr, nftID)).wait()
 
-      progress.update(n => n + 40)
+      progressBar.set({percentage: 60, message: 'Pending sale approval (2/3) ...'})
 
       await (await this._marketplaceContract.postSellOrder(nftID, amount)).wait()
 
-      progress.update(n => n + 40)
+      progressBar.set({percentage: 90, message: 'Awaiting confirmation (3/3) ...'})
 
       setTimeout(async () => await invalidateAll(), 5000)
 

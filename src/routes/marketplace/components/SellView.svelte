@@ -1,6 +1,6 @@
 <script lang="ts">
   import { View } from '$lib/types/View'
-  import { view, wallet, selected, progress } from '$lib/store'
+  import { view, wallet, selected } from '$lib/store'
   import ProgressBar from './ProgressBar.svelte'
 
   let amount = undefined
@@ -17,7 +17,12 @@
 
 <div class="sell__container">
   {#if isProgressBar}
-    <ProgressBar />
+    <div class="title__container">
+      <h2>Please follow MetaMask instructions in order to complete the sale</h2>
+    </div>
+    <div class="progress-bar__container">
+      <ProgressBar />
+    </div>
   {:else}
     <div class="title__container">
       <h2>Are you sure you want to sell this NFT?</h2>
@@ -40,7 +45,11 @@
     .title__container {
       h2 {
         margin-top: 0;
+        text-align: center;
       }
+    }
+    .progress-bar__container {
+      padding: 0 1rem;
     }
     .form__container {
       strong {

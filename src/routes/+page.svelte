@@ -74,37 +74,17 @@
 
 </script>
 
-<main>
-  <!-- <div class="blur">
-    hi
-  </div>  -->
-  <div id="canvas" bind:this={container} />
-</main>
+<div id="canvas" bind:this={container} />
 
 <style lang="scss">
-  main {
+  #canvas {
     width: 100vw;
     height: 100vh;
-    position: relative;
-    #canvas {
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(5px);
-      background: url('/images/background.png') no-repeat center center fixed;
-      background-size: cover;
-      -o-background-size: cover;
-      -moz-background-size: cover;
-      -webkit-background-size: cover;
-    }
-    .blur {
-      top: 0;
-      left: 0;
-      z-index: 2;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(5px);
-    }
+    background: url('/images/background.png') no-repeat center center fixed;
+    background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
   }
 </style>
 

@@ -33,7 +33,7 @@ export class Mocks {
       shuffled[i] = temp
     }
 
-    return shuffled.slice(0, qty).map(n => {
+    return this.NFTs.slice(0, qty).map(n => {
       return {
         id: 1,
         owner: "0x123456789",

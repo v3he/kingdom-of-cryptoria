@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import { onMount } from 'svelte'
   import { wallet } from '$lib/store'
   import { goto } from '$app/navigation'
@@ -42,18 +42,99 @@
       return goto('/marketplace')
     }
   })
-</script>
+</script> -->
 
-{#if isMetaMask}
+<!-- {#if isMetaMask}
   {#if !isConnected}
     <button on:click={connectMetaMask}>Connect with MetaMask</button>
     <br />
     <br />
     <h2>You can use this accounts to play with</h2>
-    <!-- {#each data.accounts as account}
+    {#each data.accounts as account}
 			<span>{account.privKey}</span><br />
-		{/each} -->
+		{/each}
   {/if}
 {:else}
   <p>You need to install metamask in order to play</p>
-{/if}
+{/if} -->
+
+<script lang="ts">
+
+  import { onMount } from "svelte"
+  import { GameFactory } from "$lib/models/game/GameFactory"
+  import { Mocks } from "$lib/mocks/Mocks"
+
+  let container: HTMLDivElement
+
+  onMount(() => {
+    GameFactory.container(container)
+      .players(Mocks.pickRandomNFTs(5))
+      .build()
+  })
+
+</script>
+
+<main>
+  <!-- <div class="blur">
+    hi
+  </div>  -->
+  <div id="canvas" bind:this={container} />
+</main>
+
+<style lang="scss">
+  main {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    #canvas {
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+      background: url('/images/background.png') no-repeat center center fixed;
+      background-size: cover;
+      -o-background-size: cover;
+      -moz-background-size: cover;
+      -webkit-background-size: cover;
+    }
+    .blur {
+      top: 0;
+      left: 0;
+      z-index: 2;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+    }
+  }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

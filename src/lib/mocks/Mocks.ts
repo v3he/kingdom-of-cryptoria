@@ -21,19 +21,17 @@ export class Mocks {
 
   public static pickRandomNFTs(qty: number): NFT[] {
 
-    let shuffled = this.NFTs.slice(0),
-      i = this.NFTs.length,
-      temp,
-      index
+    let result = new Array(qty),
+      len = this.NFTs.length,
+      taken = new Array(len)
 
-    while (i--) {
-      index = Math.floor((i + 1) * Math.random())
-      temp = shuffled[index]
-      shuffled[index] = shuffled[i]
-      shuffled[i] = temp
+    while (qty--) {
+      let x = Math.floor(Math.random() * len)
+      result[qty] = this.NFTs[x in taken ? taken[x] : x]
+      taken[x] = --len in taken ? taken[len] : len
     }
 
-    return this.NFTs.slice(0, qty).map(n => {
+    return result.map(n => {
       return {
         id: 1,
         owner: "0x123456789",

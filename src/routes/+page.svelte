@@ -68,15 +68,45 @@
 
   onMount(() => {
     GameFactory.container(container)
-      .players(Mocks.pickRandomNFTs(5))
+      .players(Mocks.pickRandomNFTs(2))
       .build()
   })
 
 </script>
 
+<div class="overlay">
+  <div class="scroll__container">
+    <div class="scroll__body">
+      hi
+    </div>
+  </div>
+</div>
 <div id="canvas" bind:this={container} />
 
 <style lang="scss">
+
+  .overlay {
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .scroll__container {
+      width: 755px;
+      height: 550px;
+      padding: 190px 90px 140px 90px;
+      background: url('/assets/scrolls/wide.png') no-repeat center center;
+      background-size: contain;
+      -o-background-size: contain;
+      -moz-background-size: contain;
+      -webkit-background-size: contain;
+    }
+  }
+
   #canvas {
     width: 100vw;
     height: 100vh;

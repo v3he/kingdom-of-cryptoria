@@ -62,8 +62,11 @@
   import { onMount } from 'svelte'
   import { GameFactory } from '$lib/models/game/GameFactory'
   import { Mocks } from '$lib/mocks/Mocks'
+  import ProgressBar from '$lib/components/ProgressBar.svelte'
 
   let container: HTMLDivElement
+
+  let isLoading = true
 
   function connectWithMetaMask() {
     console.log('connect')
@@ -81,12 +84,18 @@
   <div class="scroll__container">
     <div class="scroll__body">
       <h2>Welcome to the <strong>Kingdom of Cryptoria</strong>!</h2>
-      <p>
-        If you're new here and unsure about how to play, we've got you covered. Please visit the ==&gt; <a
-          href="/how-to-play"><strong>How To Play</strong></a> &lt;== section where you'll find all the information you need to get started.
-        Once you're comfortable and ready to dive in, simply click on the button below. Happy Hacking!
-      </p>
-      <button class="connect-with-metamask" on:click={connectWithMetaMask} />
+      {#if isLoading}
+        <p style="margin-bottom: 2rem;">Please wait while all components are initialized</p>
+        <ProgressBar />
+      {:else}
+        <p>
+          If you're new here and unsure about how to play, we've got you covered. Please visit the
+          ==&gt; <a href="/how-to-play"><strong>How To Play</strong></a> &lt;== section where you'll
+          find all the information you need to get started. Once you're comfortable and ready to dive
+          in, simply click on the button below. Happy Hacking!
+        </p>
+        <button class="connect-with-metamask" on:click={connectWithMetaMask} />
+      {/if}
     </div>
   </div>
 </div>
@@ -139,7 +148,6 @@
             strong {
               font-size: 1.2rem;
               color: #e5a83d;
-              // font-family: 'BMYEONSUNG', sans-serif;
               text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             }
           }

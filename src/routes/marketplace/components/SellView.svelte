@@ -1,7 +1,7 @@
 <script lang="ts">
   import { View } from '$lib/types/View'
   import { view, wallet, selected } from '$lib/store'
-  import ProgressBar from './ProgressBar.svelte'
+  import ProgressBar from '$lib/components/ProgressBar.svelte'
 
   let amount = undefined
 

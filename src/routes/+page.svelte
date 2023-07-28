@@ -64,6 +64,8 @@
   import { Mocks } from '$lib/mocks/Mocks'
   import ProgressBar from '$lib/components/ProgressBar.svelte'
 
+  import { ws } from '$lib/store'
+
   let container: HTMLDivElement
 
   let isLoading = true
@@ -71,6 +73,10 @@
   function connectWithMetaMask() {
     console.log('connect')
   }
+
+  $ws.socket.on('notification', (msg) => {
+    console.log('new notification ::', msg)
+  })
 
   onMount(() => {
     GameFactory.container(container).players(Mocks.pickRandomNFTs(2)).build()

@@ -3,7 +3,7 @@ import type { Handle } from '@sveltejs/kit'
 import { WSServer } from '$lib/models/websockets/WSServer'
 
 // let ganacheServer: GanacheServer
-let ws: WSServer
+let websockets: WSServer
 
 export const handle: Handle = async ({ event, resolve }) => {
   // if (!ganacheServer) {
@@ -13,8 +13,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   // event.locals.server = ganacheServer
 
-  if (!ws) {
-    ws = await WSServer.start()
+  if (!websockets) {
+    websockets = await WSServer.start()
   }
 
   return await resolve(event)

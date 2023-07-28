@@ -1,32 +1,35 @@
-import { Server } from "socket.io"
-import { createServer } from "http"
+import { Server } from 'socket.io'
+import { createServer } from 'http'
+
+const CORS = {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+}
 
 const PORT: number = 9999
 
 export class WSServer {
-
-  private _io: Server
+  private server: Server
 
   constructor(io: Server) {
-    this._io = io
+    this.server = io
     this.createListeners()
   }
 
   static async start(): Promise<WSServer> {
-
-    const io: Server = await new Promise((resolve) => {
-      const server = createServer()
-      server.listen(PORT, () => resolve(new Server(server)))
-    })
-
-    return new WSServer(io)
-
+    return new WSServer(
+      await new Promise((resolve) => {
+        const server = createServer()
+        server.listen(PORT, () => resolve(new Server(server, CORS)))
+      })
+    )
   }
 
   private createListeners(): void {
-    this._io.on('connection', (socket) => {
-      console.log('new connection ::', socket)
+    this.server.on('connection', () => {
+      console.log('new connection')
     })
   }
-
 }

@@ -6,6 +6,7 @@ import ganache from 'ganache'
 import { Account } from './Account'
 import { Marketplace } from './Marketplace'
 import { JsonRpcProvider, JsonRpcSigner, ethers } from 'ethers'
+import { WSServer } from './websockets/WSServer'
 
 const PORT = 8545
 const DB_PATH = './ganache'
@@ -35,33 +36,42 @@ export class GanacheServer {
   accounts: Account[]
   marketplace: Marketplace
 
+  private static instance: GanacheServer | null = null
+
   constructor(provider: JsonRpcProvider, signer: JsonRpcSigner, accounts: Account[]) {
     this.provider = provider
     this.signer = signer
     this.accounts = accounts
+    this.deploy()
   }
 
-  static async start(): Promise<GanacheServer> {
-    await new Promise((resolve, reject) => {
-      const server = ganache.server(defaultOptions)
-      server.listen(PORT, (err) => (err ? reject() : resolve(server.provider)))
-    })
+  static async start(): Promise<GanacheServer | null> {
+    if (!GanacheServer.instance) {
+      try {
 
-    const provider = new ethers.JsonRpcProvider(`http://localhost:${PORT}`)
-    const signer = await provider.getSigner(0)
+        await new Promise((resolve, reject) => {
+          const server = ganache.server(defaultOptions)
+          server.listen(PORT, (err) => (err ? reject() : resolve(server.provider)))
+        })
 
-    const accountsRaw = JSON.parse(
-      fs.readFileSync(ACCOUNT_KEYS_PATH, { encoding: 'utf8', flag: 'r' })
-    )
+        const provider = new ethers.JsonRpcProvider(`http://localhost:${PORT}`)
+        const accountsRaw = JSON.parse(fs.readFileSync(ACCOUNT_KEYS_PATH, { encoding: 'utf8' }))
 
-    const accounts = Object.entries(accountsRaw.private_keys)
-      .slice(1)
-      .map(([pub, priv]) => new Account(pub, priv as string))
+        const accounts = Object.entries(accountsRaw.private_keys)
+          .slice(1)
+          .map(([pub, priv]) => new Account(pub, priv as string))
+        
+        GanacheServer.instance = new GanacheServer(provider, await provider.getSigner(0), accounts)
 
-    return new GanacheServer(provider, signer, accounts)
+      } catch (error) {
+        return null
+      }
+    }
+    return GanacheServer.instance
   }
 
-  async deploy(): Promise<void> {
+  private async deploy(): Promise<void> {
+
     this.marketplace = new Marketplace(this.signer)
 
     const compileOptions = {
@@ -75,16 +85,30 @@ export class GanacheServer {
     const compiledOutput = JSON.parse(
       solc.compile(JSON.stringify(compileOptions), {
         import: (d: string) => ({
-          contents: fs.readFileSync(path.join('node_modules', d), { encoding: 'utf8', flag: 'r' })
+          contents: fs.readFileSync(path.join('node_modules', d), { encoding: 'utf8' })
         })
       })
     )
 
+    // handle this
     if (compiledOutput?.errors?.find((e) => e.severity === 'error')) {
       throw 'error while compiling smart contracts'
     }
 
+    WSServer.getInstance()?.sendSetupNotification({
+      message: 'compilation done',
+      current_step: 1,
+      total_steps: 4
+    })
+
     await this.marketplace.deploy(compiledOutput)
+
+    WSServer.getInstance()?.sendSetupNotification({
+      message: 'deploy done',
+      current_step: 2,
+      total_steps: 4
+    })
+
     await this.marketplace.mintNFTs([
       // 'bafkreih5i55wwrprdsjwfgkv3e2cie22j5lqmanuuoxzogs4yfitdjnwyy',
       // 'bafkreift35nigg32refqiy2whclkn5nlg3ljefjt5ps4mnjlosiukry7ou',
@@ -102,6 +126,12 @@ export class GanacheServer {
       // new NFT('bafkreictbli4ryxdxnfdejv5pzqxdpogermtel6ixboewsrnzdfhdije44'),
       // new NFT('bafkreie3d5dhdyop6n6nm6xmmd2fem37jenkhnly5zxofrdhoikfrpmzma')
     ])
+
+    WSServer.getInstance()?.sendSetupNotification({
+      message: 'mint done',
+      current_step: 3,
+      total_steps: 4
+    })
 
     await this.marketplace.mintNFTs(
       [

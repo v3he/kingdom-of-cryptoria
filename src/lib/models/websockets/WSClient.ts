@@ -1,3 +1,4 @@
+import { Channel } from '$lib/types/Channel'
 import { io, Socket } from 'socket.io-client'
 
 const PORT: number = 9999

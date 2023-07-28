@@ -1,5 +1,7 @@
 import { Server } from 'socket.io'
 import { createServer } from 'http'
+import { Channel } from '$lib/types/Channel'
+import type { SetupNotification } from '$lib/types/SetupNotification'
 
 const CORS = {
   cors: {
@@ -11,25 +13,32 @@ const CORS = {
 const PORT: number = 9999
 
 export class WSServer {
-  private server: Server
 
-  constructor(io: Server) {
-    this.server = io
-    this.createListeners()
+  private _server: Server
+  private static instance: WSServer | null = null
+
+  private constructor(server: Server) {
+    this._server = server
   }
 
-  static async start(): Promise<WSServer> {
-    return new WSServer(
-      await new Promise((resolve) => {
-        const server = createServer()
-        server.listen(PORT, () => resolve(new Server(server, CORS)))
-      })
-    )
+  static getInstance(): WSServer | null {
+    return WSServer.instance
   }
 
-  private createListeners(): void {
-    this.server.on('connection', () => {
-      console.log('new connection')
-    })
+  public static async start(): Promise<WSServer> {
+    if (!WSServer.instance) {
+      WSServer.instance = new WSServer(
+        await new Promise((resolve) => {
+          const server = createServer()
+          server.listen(PORT, () => resolve(new Server(server, CORS)))
+        })
+      )
+    }
+    return WSServer.instance
   }
+
+  sendSetupNotification(notification: SetupNotification): void {
+    this._server.emit(Channel.SETUP, notification)
+  }
+
 }

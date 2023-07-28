@@ -59,24 +59,30 @@
 {/if} -->
 
 <script lang="ts">
+
   import { onMount } from 'svelte'
-  import { GameFactory } from '$lib/models/game/GameFactory'
-  import { Mocks } from '$lib/mocks/Mocks'
-  import ProgressBar from '$lib/components/ProgressBar.svelte'
-
   import { ws } from '$lib/store'
+  import { Mocks } from '$lib/mocks/Mocks'
+  import { Channel } from '$lib/types/Channel'
+  import { GameFactory } from '$lib/models/game/GameFactory'
 
-  let container: HTMLDivElement
+  import ProgressBar from '$lib/components/ProgressBar.svelte'
+  import type { PageData } from './$types'
+
+  export let data: PageData
 
   let isLoading = true
+  let container: HTMLDivElement
+
+  if(!data.error) {
+    $ws.socket.on(Channel.SETUP, (msg) => {
+      console.log('new notification ::', msg)
+    })
+  }
 
   function connectWithMetaMask() {
     console.log('connect')
   }
-
-  $ws.socket.on('notification', (msg) => {
-    console.log('new notification ::', msg)
-  })
 
   onMount(() => {
     GameFactory.container(container).players(Mocks.pickRandomNFTs(2)).build()
@@ -89,18 +95,26 @@
   </div>
   <div class="scroll__container">
     <div class="scroll__body">
-      <h2>Welcome to the <strong>Kingdom of Cryptoria</strong>!</h2>
-      {#if isLoading}
-        <p style="margin-bottom: 2rem;">Please wait while all components are initialized</p>
-        <ProgressBar />
+      {#if data.error}
+        <h2>Oops! there seems to have been an error</h2>
+        <div class="error__container">
+          <img src="/images/exclamation-red.png" alt="">
+          <p><strong>{data.error}</strong><br/>Please try rebooting the server</p>
+        </div>
       {:else}
-        <p>
-          If you're new here and unsure about how to play, we've got you covered. Please visit the
-          ==&gt; <a href="/how-to-play"><strong>How To Play</strong></a> &lt;== section where you'll
-          find all the information you need to get started. Once you're comfortable and ready to dive
-          in, simply click on the button below. Happy Hacking!
-        </p>
-        <button class="connect-with-metamask" on:click={connectWithMetaMask} />
+        <h2>Welcome to the <strong>Kingdom of Cryptoria</strong>!</h2>
+        {#if isLoading}
+          <p style="margin-bottom: 2rem;">Please wait while all components are initialized</p>
+          <ProgressBar />
+        {:else}
+          <p>
+            If you're new here and unsure about how to play, we've got you covered. Please visit the
+            ==&gt; <a href="/how-to-play"><strong>How To Play</strong></a> &lt;== section where you'll
+            find all the information you need to get started. Once you're comfortable and ready to dive
+            in, simply click on the button below. Happy Hacking!
+          </p>
+          <button class="connect-with-metamask" on:click={connectWithMetaMask} />
+        {/if}
       {/if}
     </div>
   </div>
@@ -138,6 +152,16 @@
       .scroll__body {
         text-align: center;
         font-family: 'BMYEONSUNG', sans-serif;
+        .error__container {
+          img {
+            width: 60px;
+          }
+          strong {
+            font-size: 1.8rem;
+            color: #c3542a;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+          }
+        }
         h2 {
           strong {
             font-size: 1.8rem;

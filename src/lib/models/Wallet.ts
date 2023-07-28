@@ -82,20 +82,18 @@ export class Wallet {
   // refactor and do error handling
   async createSellOrder(nftID: number, amount: number): Promise<void> {
     try {
-
-      progressBar.set({percentage: 30, message: 'Pending transaction approval (1/3) ...'})
+      progressBar.set({ percentage: 30, message: 'Pending transaction approval (1/3) ...' })
 
       const addr: string = await this._marketplaceContract.getAddress()
       await (await this._nftContract.approve(addr, nftID)).wait()
 
-      progressBar.set({percentage: 60, message: 'Pending sale approval (2/3) ...'})
+      progressBar.set({ percentage: 60, message: 'Pending sale approval (2/3) ...' })
 
       await (await this._marketplaceContract.postSellOrder(nftID, amount)).wait()
 
-      progressBar.set({percentage: 90, message: 'Awaiting confirmation (3/3) ...'})
+      progressBar.set({ percentage: 90, message: 'Awaiting confirmation (3/3) ...' })
 
       setTimeout(async () => await invalidateAll(), 5000)
-
     } catch (error) {
       console.log('unable to create sell order', error)
     }

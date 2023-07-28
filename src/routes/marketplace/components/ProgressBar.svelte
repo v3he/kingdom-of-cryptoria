@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { progressBar } from "$lib/store"
+  import { progressBar } from '$lib/store'
 </script>
 
 <div class="progress-bar__container">
@@ -7,14 +7,12 @@
     <span>{$progressBar?.message}</span>
   </div>
   <div class="meter">
-    <span style="width: {$progressBar?.percentage}%"></span>
+    <span style="width: {$progressBar?.percentage}%" />
   </div>
 </div>
 
 <style lang="scss">
-
   .progress-bar__container {
-
     .info__container {
       text-align: center;
       margin-bottom: 1rem;
@@ -39,14 +37,13 @@
       border-bottom-left-radius: 20px;
       background-color: #a2724a;
       background-image: linear-gradient(center bottom, #a2724a 37%, #a2724a 69%);
-      box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.4);
       position: relative;
       overflow: hidden;
     }
 
     .meter > span:after {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
@@ -80,7 +77,5 @@
         background-position: 50px 50px;
       }
     }
-
   }
-
 </style>

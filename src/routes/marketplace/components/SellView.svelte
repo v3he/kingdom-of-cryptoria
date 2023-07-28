@@ -29,7 +29,13 @@
       <p>Please set the selling price:</p>
     </div>
     <div class="form__container">
-      <input type="number" id="amount" name="amount" placeholder="10" required bind:value={amount} />
+      <input
+        type="number"
+        id="amount"
+        name="amount"
+        placeholder="10"
+        required
+        bind:value={amount} />
       <label for="amount"><strong>EST</strong></label>
     </div>
     <div class="action__buttons">

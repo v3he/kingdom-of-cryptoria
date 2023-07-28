@@ -59,32 +59,40 @@
 {/if} -->
 
 <script lang="ts">
-
-  import { onMount } from "svelte"
-  import { GameFactory } from "$lib/models/game/GameFactory"
-  import { Mocks } from "$lib/mocks/Mocks"
+  import { onMount } from 'svelte'
+  import { GameFactory } from '$lib/models/game/GameFactory'
+  import { Mocks } from '$lib/mocks/Mocks'
 
   let container: HTMLDivElement
 
-  onMount(() => {
-    GameFactory.container(container)
-      .players(Mocks.pickRandomNFTs(2))
-      .build()
-  })
+  function connectWithMetaMask() {
+    console.log('connect')
+  }
 
+  onMount(() => {
+    GameFactory.container(container).players(Mocks.pickRandomNFTs(2)).build()
+  })
 </script>
 
 <div class="overlay">
+  <div class="logo__container">
+    <img src="/assets/koc.png" alt="Kingdom Of Cryptoria Logo" />
+  </div>
   <div class="scroll__container">
     <div class="scroll__body">
-      hi
+      <h2>Welcome to the <strong>Kingdom of Cryptoria</strong>!</h2>
+      <p>
+        If you're new here and unsure about how to play, we've got you covered. Please visit the ==&gt; <a
+          href="/how-to-play"><strong>How To Play</strong></a> &lt;== section where you'll find all the information you need to get started.
+        Once you're comfortable and ready to dive in, simply click on the button below. Happy Hacking!
+      </p>
+      <button class="connect-with-metamask" on:click={connectWithMetaMask} />
     </div>
   </div>
 </div>
 <div id="canvas" bind:this={container} />
 
 <style lang="scss">
-
   .overlay {
     z-index: 2;
     top: 0;
@@ -95,15 +103,61 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    .logo__container {
+      left: 0;
+      top: 30px;
+      position: absolute;
+      img {
+        width: 250px;
+      }
+    }
     .scroll__container {
       width: 755px;
       height: 550px;
-      padding: 190px 90px 140px 90px;
+      padding: 170px 90px 140px 90px;
       background: url('/assets/scrolls/wide.png') no-repeat center center;
       background-size: contain;
       -o-background-size: contain;
       -moz-background-size: contain;
       -webkit-background-size: contain;
+      .scroll__body {
+        text-align: center;
+        font-family: 'BMYEONSUNG', sans-serif;
+        h2 {
+          strong {
+            font-size: 1.8rem;
+            color: #e5a83d;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+          }
+        }
+        p {
+          font-size: 1.1rem;
+          line-height: 1.3;
+          font-family: 'SangSangRockRegular', sans-serif;
+          a {
+            text-decoration: none;
+            strong {
+              font-size: 1.2rem;
+              color: #e5a83d;
+              // font-family: 'BMYEONSUNG', sans-serif;
+              text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            }
+          }
+        }
+        .connect-with-metamask {
+          all: unset;
+          width: 300px;
+          height: 60px;
+          cursor: pointer;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-image: url('/assets/buttons/connect-with-metamask-button.png');
+          &:hover {
+            background-image: url('/assets/buttons/connect-with-metamask-button-pressed.png');
+          }
+        }
+      }
     }
   }
 
@@ -117,34 +171,3 @@
     -webkit-background-size: cover;
   }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
